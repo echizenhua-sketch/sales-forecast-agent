@@ -3,32 +3,43 @@
 from pathlib import Path
 
 from sqlalchemy import create_engine
-from sqlalchemy.engine import make_url
+from sqlalchemy.engine import URL, make_url
 from sqlalchemy.orm import sessionmaker
 
 from src.core.config import settings
 
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
 
-def _ensure_sqlite_parent_dir(database_url: str) -> None:
-    """Create the parent directory for file-backed SQLite databases."""
+
+def _normalize_sqlite_database_url(database_url: str) -> str:
+    """Resolve relative SQLite database paths against the project root."""
     url = make_url(database_url)
     database_path = url.database
 
     if not url.drivername.startswith("sqlite") or not database_path:
-        return
+        return database_url
 
     if database_path == ":memory:":
-        return
+        return database_url
 
     sqlite_path = Path(database_path)
     if not sqlite_path.is_absolute():
-        sqlite_path = Path.cwd() / sqlite_path
+        sqlite_path = (PROJECT_ROOT / sqlite_path).resolve()
 
+    normalized_url = URL.create(
+        drivername=url.drivername,
+        username=url.username,
+        password=url.password,
+        host=url.host,
+        port=url.port,
+        database=sqlite_path.as_posix(),
+        query=url.query,
+    )
     sqlite_path.parent.mkdir(parents=True, exist_ok=True)
+    return normalized_url.render_as_string(hide_password=False)
 
 
-_ensure_sqlite_parent_dir(settings.database_url)
-engine = create_engine(settings.database_url, future=True)
+engine = create_engine(_normalize_sqlite_database_url(settings.database_url), future=True)
 SessionLocal = sessionmaker(
     bind=engine,
     autoflush=False,
