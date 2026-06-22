@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SKU明细（虚拟滚动）- 产销预测智能工作台</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif;
+            background: #f5f7fa;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: white;
+            padding: 16px 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .back-btn {
+            padding: 8px 16px;
+            background: #f5f5f5;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+
+        .toolbar {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .info-bar {
+            background: white;
+            padding: 16px 24px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .table-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+
+        .table-header {
+            display: grid;
+            grid-template-columns: 150px 200px 120px 120px 120px 120px 120px 120px;
+            background: #f8f9fa;
+            font-weight: 600;
+            border-bottom: 2px solid #e0e0e0;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .table-header-cell {
+            padding: 16px 12px;
+            border-right: 1px solid #e0e0e0;
+            font-size: 14px;
+            color: #333;
+        }
+
+        .virtual-scroll-container {
+            height: 600px;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .virtual-scroll-content {
+            position: relative;
+        }
+
+        .table-row {
+            display: grid;
+            grid-template-columns: 150px 200px 120px 120px 120px 120px 120px 120px;
+            border-bottom: 1px solid #e0e0e0;
+            transition: background 0.2s;
+            position: absolute;
+            width: 100%;
+            left: 0;
+        }
+
+        .table-row:hover {
+            background: #f8f9fa;
+        }
+
+        .table-cell {
+            padding: 12px;
+            border-right: 1px solid #e0e0e0;
+            font-size: 14px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .risk-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .risk-CRITICAL {
+            background: #fee;
+            color: #c33;
+        }
+
+        .risk-HIGH {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .risk-MEDIUM {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .risk-NORMAL {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #667eea;
+        }
+
+        .stats {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .positive {
+            color: #28a745;
+        }
+
+        .negative {
+            color: #dc3545;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <button class="back-btn" onclick="history.back()">← 返回</button>
+        <h1>SKU明细（虚拟滚动）</h1>
+    </div>
+
+    <div class="container">
+        <div class="info-bar">
+            <div class="stats">
+                共 <strong id="totalCount">0</strong> 条数据 |
+                当前显示 <strong id="visibleRange">0-0</strong> |
+                滚动位置 <strong id="scrollPos">0</strong>%
+            </div>
+            <div class="stats">
+                虚拟滚动模式：支持 <strong>10万+</strong> 行数据流畅浏览
+            </div>
+        </div>
+
+        <div class="table-container">
+            <div class="table-header">
+                <div class="table-header-cell">SKU编码</div>
+                <div class="table-header-cell">产品名称</div>
+                <div class="table-header-cell">总供应</div>
+                <div class="table-header-cell">合计SAR</div>
+                <div class="table-header-cell">缺口</div>
+                <div class="table-header-cell">满足率</div>
+                <div class="table-header-cell">风险等级</div>
+                <div class="table-header-cell">风险评分</div>
+            </div>
+
+            <div class="virtual-scroll-container" id="scrollContainer">
+                <div class="virtual-scroll-content" id="scrollContent">
+                    <div class="loading">加载中...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:8000';
+        const urlParams = new URLSearchParams(window.location.search);
+        const taskId = urlParams.get('taskId');
+
+        // 虚拟滚动配置
+        const ROW_HEIGHT = 48;
+        const BUFFER_SIZE = 10;
+        let allData = [];
+        let visibleData = [];
+
+        class VirtualScroller {
+            constructor(container, contentElement, data, rowHeight) {
+                this.container = container;
+                this.content = contentElement;
+                this.data = data;
+                this.rowHeight = rowHeight;
+                this.visibleStart = 0;
+                this.visibleEnd = 0;
+
+                this.init();
+            }
+
+            init() {
+                this.updateVisibleRange();
+                this.render();
+
+                this.container.addEventListener('scroll', () => {
+                    this.updateVisibleRange();
+                    this.render();
+                    this.updateStats();
+                });
+            }
+
+            updateVisibleRange() {
+                const scrollTop = this.container.scrollTop;
+                const containerHeight = this.container.clientHeight;
+
+                this.visibleStart = Math.max(0, Math.floor(scrollTop / this.rowHeight) - BUFFER_SIZE);
+                this.visibleEnd = Math.min(
+                    this.data.length,
+                    Math.ceil((scrollTop + containerHeight) / this.rowHeight) + BUFFER_SIZE
+                );
+            }
+
+            render() {
+                // 设置总高度
+                const totalHeight = this.data.length * this.rowHeight;
+                this.content.style.height = totalHeight + 'px';
+
+                // 清空现有内容
+                this.content.innerHTML = '';
+
+                // 只渲染可见范围内的行
+                for (let i = this.visibleStart; i < this.visibleEnd; i++) {
+                    const item = this.data[i];
+                    const row = this.createRow(item, i);
+                    this.content.appendChild(row);
+                }
+            }
+
+            createRow(item, index) {
+                const row = document.createElement('div');
+                row.className = 'table-row';
+                row.style.top = (index * this.rowHeight) + 'px';
+
+                const gap = item.gap || 0;
+                const gapClass = gap >= 0 ? 'positive' : 'negative';
+
+                row.innerHTML = `
+                    <div class="table-cell">${item.sku_code}</div>
+                    <div class="table-cell" title="${item.product_name || '-'}">${item.product_name || '-'}</div>
+                    <div class="table-cell">${formatNumber(item.total_supply)}</div>
+                    <div class="table-cell">${formatNumber(item.sar_total)}</div>
+                    <div class="table-cell ${gapClass}">${(gap >= 0 ? '+' : '') + formatNumber(gap)}</div>
+                    <div class="table-cell">${(item.service_level || 0).toFixed(1)}%</div>
+                    <div class="table-cell"><span class="risk-badge risk-${item.risk_level}">${item.risk_level}</span></div>
+                    <div class="table-cell">${(item.risk_score || 0).toFixed(1)}</div>
+                `;
+
+                return row;
+            }
+
+            updateStats() {
+                const scrollPercent = Math.round((this.container.scrollTop / (this.container.scrollHeight - this.container.clientHeight)) * 100) || 0;
+                document.getElementById('scrollPos').textContent = scrollPercent;
+                document.getElementById('visibleRange').textContent = `${this.visibleStart + 1}-${this.visibleEnd}`;
+            }
+        }
+
+        async function loadData() {
+            try {
+                const response = await fetch(`${API_BASE}/api/tasks/${taskId}/sku-details?page=1&page_size=100000`);
+                const data = await response.json();
+
+                allData = data.items;
+                document.getElementById('totalCount').textContent = allData.length.toLocaleString();
+
+                // 初始化虚拟滚动
+                const container = document.getElementById('scrollContainer');
+                const content = document.getElementById('scrollContent');
+                new VirtualScroller(container, content, allData, ROW_HEIGHT);
+
+            } catch (error) {
+                console.error('加载数据失败:', error);
+                document.getElementById('scrollContent').innerHTML = '<div class="loading">加载失败</div>';
+            }
+        }
+
+        function formatNumber(num) {
+            return Math.round(num).toLocaleString('zh-CN');
+        }
+
+        window.onload = () => {
+            if (!taskId) {
+                alert('缺少任务ID');
+                history.back();
+                return;
+            }
+
+            loadData();
+        };
+    </script>
+</body>
+</html>

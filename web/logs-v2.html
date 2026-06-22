@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html class="light" lang="zh-CN">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>操作日志 - 产销预测智能工作台</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet"/>
+    <script id="tailwind-config">
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#003d9b",
+              "primary-container": "#0052cc",
+              "on-primary": "#ffffff",
+              "on-primary-container": "#c4d2ff",
+              "background": "#faf8ff",
+              "surface": "#faf8ff",
+              "surface-container": "#ededf8",
+              "surface-container-low": "#f3f3fd",
+              "surface-container-lowest": "#ffffff",
+              "on-surface": "#191b23",
+              "on-surface-variant": "#434654",
+              "outline": "#737685",
+              "outline-variant": "#c3c6d6",
+            }
+          }
+        }
+      }
+    </script>
+    <style>
+        body { font-family: "Inter", "PingFang SC", "Microsoft YaHei", sans-serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+    </style>
+</head>
+<body class="overflow-hidden bg-background">
+<aside class="fixed left-0 top-0 h-full z-40 w-[240px] flex flex-col bg-surface-container-lowest border-r border-outline-variant">
+    <div class="p-6 flex items-center gap-2">
+        <div class="w-8 h-8 bg-primary rounded flex items-center justify-center">
+            <span class="material-symbols-outlined text-on-primary">insights</span>
+        </div>
+        <div>
+            <h1 class="text-xl font-bold text-primary">产销预测 Agent</h1>
+            <p class="text-xs text-on-surface-variant opacity-70">Enterprise Intelligence</p>
+        </div>
+    </div>
+    <nav class="flex-1 px-2 mt-4">
+        <a class="flex items-center gap-4 px-4 py-2 mb-1 rounded text-on-surface-variant hover:bg-surface-container" href="dashboard-v2.html">
+            <span class="material-symbols-outlined">dashboard</span>
+            <span>工作台</span>
+        </a>
+        <a class="flex items-center gap-4 px-4 py-2 mb-1 rounded text-on-surface-variant hover:bg-surface-container" href="results-v2.html">
+            <span class="material-symbols-outlined">dataset</span>
+            <span>数据汇总</span>
+        </a>
+        <a class="flex items-center gap-4 px-4 py-2 mb-1 rounded text-on-surface-variant hover:bg-surface-container" href="assistant-v2.html">
+            <span class="material-symbols-outlined">smart_toy</span>
+            <span>智能助手</span>
+        </a>
+        <a class="flex items-center gap-4 px-4 py-2 mb-1 rounded bg-primary-container text-on-primary-container font-bold border-r-4 border-primary" href="logs-v2.html">
+            <span class="material-symbols-outlined">history</span>
+            <span>操作日志</span>
+        </a>
+    </nav>
+    <div class="p-6 border-t border-outline-variant flex items-center gap-3">
+        <div class="w-10 h-10 rounded-full bg-primary text-on-primary flex items-center justify-center font-bold">A</div>
+        <div class="flex-1 min-w-0">
+            <p class="font-bold text-on-surface truncate" id="userName">管理员</p>
+            <p class="text-sm text-on-surface-variant truncate">v2.3.0 Pro</p>
+        </div>
+    </div>
+</aside>
+
+<header class="fixed top-0 right-0 left-[240px] z-30 h-16 px-6 flex justify-between items-center bg-surface border-b border-outline-variant">
+    <div class="flex items-center gap-6 flex-1">
+        <div class="relative w-full max-w-md">
+            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">search</span>
+            <input id="globalSearch" class="w-full pl-10 pr-4 py-2 bg-surface-container-low border border-outline-variant rounded-lg focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary" placeholder="搜索预测结果或任务..." type="text" onkeypress="handleSearchKey(event)"/>
+        </div>
+    </div>
+    <div class="flex items-center gap-4">
+        <button class="p-2 rounded-full text-on-surface-variant hover:text-primary" onclick="showNotifications()">
+            <span class="material-symbols-outlined">notifications</span>
+        </button>
+        <button class="p-2 rounded-full text-on-surface-variant hover:text-primary" onclick="location.href='settings-v2.html'">
+            <span class="material-symbols-outlined">settings</span>
+        </button>
+        <div class="h-6 w-[1px] bg-outline-variant mx-2"></div>
+        <button class="px-6 py-2 bg-primary text-on-primary rounded hover:opacity-90" onclick="logout()">退出登录</button>
+    </div>
+</header>
+
+<main class="ml-[240px] mt-16 h-[calc(100vh-64px)] overflow-y-auto bg-background">
+    <section class="p-6">
+        <div class="max-w-7xl mx-auto space-y-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h2 class="text-2xl font-bold text-on-surface">操作日志</h2>
+                    <p class="text-on-surface-variant mt-1">查看登录、上传、导出和 AI 对话等关键操作</p>
+                </div>
+                <button class="flex items-center gap-2 px-4 py-2 bg-primary text-on-primary rounded-lg hover:opacity-90" onclick="loadLogs()">
+                    <span class="material-symbols-outlined">refresh</span>
+                    刷新
+                </button>
+            </div>
+
+            <div class="grid grid-cols-4 gap-4">
+                <div class="bg-surface-container-lowest border border-outline-variant rounded-lg p-5">
+                    <p class="text-sm text-on-surface-variant mb-2">日志总数</p>
+                    <p class="text-2xl font-bold text-on-surface" id="logTotal">--</p>
+                </div>
+                <div class="bg-surface-container-lowest border border-outline-variant rounded-lg p-5">
+                    <p class="text-sm text-on-surface-variant mb-2">上传操作</p>
+                    <p class="text-2xl font-bold text-on-surface" id="uploadCount">--</p>
+                </div>
+                <div class="bg-surface-container-lowest border border-outline-variant rounded-lg p-5">
+                    <p class="text-sm text-on-surface-variant mb-2">导出操作</p>
+                    <p class="text-2xl font-bold text-on-surface" id="exportCount">--</p>
+                </div>
+                <div class="bg-surface-container-lowest border border-outline-variant rounded-lg p-5">
+                    <p class="text-sm text-on-surface-variant mb-2">AI 对话</p>
+                    <p class="text-2xl font-bold text-on-surface" id="chatCount">--</p>
+                </div>
+            </div>
+
+            <section class="bg-surface-container-lowest border border-outline-variant rounded-xl overflow-hidden">
+                <div class="p-5 border-b border-outline-variant flex items-center justify-between">
+                    <h3 class="text-lg font-semibold text-on-surface">日志明细</h3>
+                    <p class="text-sm text-on-surface-variant">按时间倒序展示最近 100 条记录</p>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm">
+                        <thead class="bg-surface-container border-b-2 border-outline-variant">
+                            <tr>
+                                <th class="text-left px-4 py-3 font-semibold text-on-surface">时间</th>
+                                <th class="text-left px-4 py-3 font-semibold text-on-surface">用户</th>
+                                <th class="text-left px-4 py-3 font-semibold text-on-surface">操作</th>
+                                <th class="text-left px-4 py-3 font-semibold text-on-surface">资源</th>
+                                <th class="text-left px-4 py-3 font-semibold text-on-surface">详情</th>
+                            </tr>
+                        </thead>
+                        <tbody id="logRows">
+                            <tr><td colspan="5" class="px-4 py-8 text-center text-on-surface-variant">加载中...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
+    </section>
+</main>
+
+<script>
+const API_BASE = 'http://localhost:8000';
+let currentUser = null;
+
+function authHeaders(extra = {}) {
+    const token = localStorage.getItem('accessToken');
+    return token ? { ...extra, Authorization: `Bearer ${token}` } : extra;
+}
+
+window.onload = async () => {
+    const userStr = localStorage.getItem('user');
+    if (!userStr) {
+        window.location.href = 'login-v2.html';
+        return;
+    }
+    currentUser = JSON.parse(userStr);
+    document.getElementById('userName').textContent = currentUser.real_name || currentUser.username;
+    await loadLogs();
+};
+
+async function loadLogs() {
+    const rows = document.getElementById('logRows');
+    rows.innerHTML = '<tr><td colspan="5" class="px-4 py-8 text-center text-on-surface-variant">加载中...</td></tr>';
+
+    try {
+        const response = await fetch(`${API_BASE}/api/logs?limit=100`, { headers: authHeaders() });
+        const data = await response.json();
+        if (!response.ok) {
+            throw new Error(data.detail || '操作日志加载失败');
+        }
+
+        const items = data.items || [];
+        updateStats(items);
+
+        if (!items.length) {
+            rows.innerHTML = '<tr><td colspan="5" class="px-4 py-8 text-center text-on-surface-variant">暂无操作日志</td></tr>';
+            return;
+        }
+
+        rows.innerHTML = items.map(item => `
+            <tr class="border-b border-outline-variant hover:bg-surface-container">
+                <td class="px-4 py-3 text-on-surface whitespace-nowrap">${formatDate(item.created_at)}</td>
+                <td class="px-4 py-3 text-on-surface">${escapeHtml(item.username || '-')}</td>
+                <td class="px-4 py-3">${renderOperation(item.operation)}</td>
+                <td class="px-4 py-3 text-on-surface-variant">${escapeHtml(formatResource(item))}</td>
+                <td class="px-4 py-3 text-on-surface-variant max-w-xl truncate" title="${escapeHtml(formatDetail(item.detail))}">${escapeHtml(formatDetail(item.detail))}</td>
+            </tr>
+        `).join('');
+    } catch (error) {
+        console.error('加载操作日志失败:', error);
+        rows.innerHTML = `<tr><td colspan="5" class="px-4 py-8 text-center text-red-600">${escapeHtml(error.message || '操作日志加载失败')}</td></tr>`;
+        updateStats([]);
+    }
+}
+
+function updateStats(items) {
+    document.getElementById('logTotal').textContent = items.length;
+    document.getElementById('uploadCount').textContent = items.filter(item => item.operation === 'UPLOAD').length;
+    document.getElementById('exportCount').textContent = items.filter(item => item.operation === 'EXPORT').length;
+    document.getElementById('chatCount').textContent = items.filter(item => item.operation === 'AI_CHAT').length;
+}
+
+function renderOperation(operation) {
+    const labels = {
+        LOGIN: '登录',
+        UPLOAD: '上传',
+        TASK_SUCCESS: '任务成功',
+        TASK_FAILED: '任务失败',
+        EXPORT: '导出',
+        AI_CHAT: 'AI 对话',
+    };
+    const colors = {
+        LOGIN: 'bg-blue-100 text-blue-700',
+        UPLOAD: 'bg-indigo-100 text-indigo-700',
+        TASK_SUCCESS: 'bg-green-100 text-green-700',
+        TASK_FAILED: 'bg-red-100 text-red-700',
+        EXPORT: 'bg-purple-100 text-purple-700',
+        AI_CHAT: 'bg-cyan-100 text-cyan-700',
+    };
+    return `<span class="inline-flex px-3 py-1 rounded-full text-xs font-semibold ${colors[operation] || 'bg-gray-100 text-gray-700'}">${labels[operation] || escapeHtml(operation || '-')}</span>`;
+}
+
+function formatResource(item) {
+    if (!item.resource_type) return '-';
+    return `${item.resource_type}${item.resource_id ? ` #${item.resource_id}` : ''}`;
+}
+
+function formatDetail(detail) {
+    if (!detail || Object.keys(detail).length === 0) return '-';
+    return JSON.stringify(detail);
+}
+
+function formatDate(value) {
+    if (!value) return '-';
+    return new Date(value).toLocaleString('zh-CN');
+}
+
+function escapeHtml(value) {
+    return String(value)
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#039;');
+}
+
+function logout() {
+    if (confirm('确定要退出登录吗？')) {
+        localStorage.removeItem('user');
+        localStorage.removeItem('accessToken');
+        window.location.href = 'login-v2.html';
+    }
+}
+
+async function showNotifications() {
+    const response = await fetch(`${API_BASE}/api/notifications`, { headers: authHeaders() });
+    const data = await response.json();
+    alert((data.items || []).map(item => `${item.title}: ${item.message}`).join('\n'));
+}
+
+function handleSearchKey(event) {
+    if (event.key === 'Enter') {
+        const q = event.target.value.trim();
+        if (q) window.location.href = `results-v2.html?q=${encodeURIComponent(q)}`;
+    }
+}
+</script>
+</body>
+</html>

@@ -6,9 +6,10 @@ from sqlalchemy import create_engine
 from sqlalchemy.engine import URL, make_url
 from sqlalchemy.orm import sessionmaker
 
-from src.core.config import settings
+from src.core.config import get_settings
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
+settings = globals().get("settings") or get_settings()
 
 
 def _normalize_sqlite_database_url(database_url: str) -> str:

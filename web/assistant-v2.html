@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html class="light" lang="zh-CN">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>智能助手 - 产销预测智能工作台</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet"/>
+    <script id="tailwind-config">
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#003d9b",
+              "primary-container": "#0052cc",
+              "on-primary": "#ffffff",
+              "on-primary-container": "#c4d2ff",
+              "background": "#faf8ff",
+              "surface": "#faf8ff",
+              "surface-container": "#ededf8",
+              "surface-container-low": "#f3f3fd",
+              "surface-container-lowest": "#ffffff",
+              "on-surface": "#191b23",
+              "on-surface-variant": "#434654",
+              "outline": "#737685",
+              "outline-variant": "#c3c6d6",
+            }
+          }
+        }
+      }
+    </script>
+    <style>
+        body { font-family: "Inter", "PingFang SC", "Microsoft YaHei", sans-serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+    </style>
+</head>
+<body class="overflow-hidden bg-background">
+<aside class="fixed left-0 top-0 h-full z-40 w-[240px] flex flex-col bg-surface-container-lowest border-r border-outline-variant">
+    <div class="p-6 flex items-center gap-2">
+        <div class="w-8 h-8 bg-primary rounded flex items-center justify-center">
+            <span class="material-symbols-outlined text-on-primary">insights</span>
+        </div>
+        <div>
+            <h1 class="text-xl font-bold text-primary">产销预测 Agent</h1>
+            <p class="text-xs text-on-surface-variant opacity-70">Enterprise Intelligence</p>
+        </div>
+    </div>
+    <nav class="flex-1 px-2 mt-4">
+        <a class="flex items-center gap-4 px-4 py-2 mb-1 rounded text-on-surface-variant hover:bg-surface-container" href="dashboard-v2.html">
+            <span class="material-symbols-outlined">dashboard</span>
+            <span>工作台</span>
+        </a>
+        <a class="flex items-center gap-4 px-4 py-2 mb-1 rounded text-on-surface-variant hover:bg-surface-container" href="results-v2.html">
+            <span class="material-symbols-outlined">dataset</span>
+            <span>数据汇总</span>
+        </a>
+        <a class="flex items-center gap-4 px-4 py-2 mb-1 rounded bg-primary-container text-on-primary-container font-bold border-r-4 border-primary" href="assistant-v2.html">
+            <span class="material-symbols-outlined">smart_toy</span>
+            <span>智能助手</span>
+        </a>
+        <a class="flex items-center gap-4 px-4 py-2 mb-1 rounded text-on-surface-variant hover:bg-surface-container" href="logs-v2.html">
+            <span class="material-symbols-outlined">history</span>
+            <span>操作日志</span>
+        </a>
+    </nav>
+    <div class="p-6 border-t border-outline-variant flex items-center gap-3">
+        <div class="w-10 h-10 rounded-full bg-primary text-on-primary flex items-center justify-center font-bold">A</div>
+        <div class="flex-1 min-w-0">
+            <p class="font-bold text-on-surface truncate" id="userName">管理员</p>
+            <p class="text-sm text-on-surface-variant truncate">v2.3.0 Pro</p>
+        </div>
+    </div>
+</aside>
+
+<header class="fixed top-0 right-0 left-[240px] z-30 h-16 px-6 flex justify-between items-center bg-surface border-b border-outline-variant">
+    <div>
+        <p class="text-sm text-on-surface-variant">当前任务</p>
+        <p class="font-medium text-on-surface" id="taskInfo">正在加载任务...</p>
+    </div>
+    <div class="flex items-center gap-4">
+        <button class="p-2 rounded-full text-on-surface-variant hover:text-primary" onclick="showNotifications()">
+            <span class="material-symbols-outlined">notifications</span>
+        </button>
+        <button class="p-2 rounded-full text-on-surface-variant hover:text-primary" onclick="location.href='settings-v2.html'">
+            <span class="material-symbols-outlined">settings</span>
+        </button>
+        <div class="h-6 w-[1px] bg-outline-variant mx-2"></div>
+        <button class="px-6 py-2 bg-primary text-on-primary rounded hover:opacity-90" onclick="logout()">退出登录</button>
+    </div>
+</header>
+
+<main class="ml-[240px] mt-16 h-[calc(100vh-64px)] overflow-hidden bg-background">
+    <section class="h-full p-6 overflow-hidden">
+        <div class="max-w-7xl mx-auto h-full flex flex-col gap-6 overflow-hidden">
+            <div class="flex-shrink-0 flex items-start justify-between gap-6">
+                <div>
+                    <h2 class="text-2xl font-bold text-on-surface">智能助手</h2>
+                    <p class="text-on-surface-variant mt-1">基于数据库任务汇总和 SKU 明细回答产销预测问题</p>
+                </div>
+                <button class="flex items-center gap-2 px-4 py-2 border border-outline-variant rounded-lg text-on-surface hover:bg-surface-container" onclick="loadLatestTask()">
+                    <span class="material-symbols-outlined">refresh</span>
+                    刷新任务
+                </button>
+            </div>
+
+            <div class="grid grid-cols-[320px_1fr] gap-6 flex-1 min-h-0">
+                <aside class="space-y-4 min-h-0 overflow-y-auto pr-1">
+                    <div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-5">
+                        <h3 class="font-semibold text-on-surface mb-3">常用问题</h3>
+                        <div class="space-y-2" id="questionList">
+                            <button data-question-button disabled class="w-full text-left px-3 py-2 rounded border border-outline-variant text-sm text-on-surface hover:bg-surface-container disabled:opacity-50 disabled:cursor-not-allowed" onclick="sendMappedQuestion('分析当前风险最高的 SKU')">分析当前风险最高的 SKU</button>
+                            <button data-question-button disabled class="w-full text-left px-3 py-2 rounded border border-outline-variant text-sm text-on-surface hover:bg-surface-container disabled:opacity-50 disabled:cursor-not-allowed" onclick="sendMappedQuestion('哪些 SKU 缺货最严重？')">哪些 SKU 缺货最严重？</button>
+                            <button data-question-button disabled class="w-full text-left px-3 py-2 rounded border border-outline-variant text-sm text-on-surface hover:bg-surface-container disabled:opacity-50 disabled:cursor-not-allowed" onclick="sendMappedQuestion('满足率为什么没有达标？')">满足率为什么没有达标？</button>
+                            <button data-question-button disabled class="w-full text-left px-3 py-2 rounded border border-outline-variant text-sm text-on-surface hover:bg-surface-container disabled:opacity-50 disabled:cursor-not-allowed" onclick="sendMappedQuestion('请给出本月排产优先级建议')">请给出本月排产优先级建议</button>
+                            <button data-question-button disabled class="w-full text-left px-3 py-2 rounded border border-outline-variant text-sm text-on-surface hover:bg-surface-container disabled:opacity-50 disabled:cursor-not-allowed" onclick="sendMappedQuestion('KA 部和省大区优先保障哪些 SKU？')">KA 部和省大区优先保障哪些 SKU？</button>
+                            <button data-question-button disabled class="w-full text-left px-3 py-2 rounded border border-outline-variant text-sm text-on-surface hover:bg-surface-container disabled:opacity-50 disabled:cursor-not-allowed" onclick="sendMappedQuestion('有哪些风险等级异常需要复核？')">有哪些风险等级异常需要复核？</button>
+                        </div>
+                    </div>
+
+                    <div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-5">
+                        <div class="flex items-center justify-between mb-3">
+                            <h3 class="font-semibold text-on-surface">对话历史</h3>
+                            <button class="text-xs text-primary hover:underline" onclick="startNewSession()">新对话</button>
+                        </div>
+                        <div class="space-y-2" id="historyList">
+                            <p class="text-sm text-on-surface-variant">暂无历史对话</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-5">
+                        <h3 class="font-semibold text-on-surface mb-3">数据范围</h3>
+                        <dl class="space-y-3 text-sm">
+                            <div>
+                                <dt class="text-on-surface-variant">任务编号</dt>
+                                <dd class="font-medium text-on-surface" id="taskIdLabel">--</dd>
+                            </div>
+                            <div>
+                                <dt class="text-on-surface-variant">数据文件</dt>
+                                <dd class="font-medium text-on-surface break-words" id="taskFileLabel">--</dd>
+                            </div>
+                            <div>
+                                <dt class="text-on-surface-variant">任务状态</dt>
+                                <dd class="font-medium text-on-surface" id="taskStatusLabel">--</dd>
+                            </div>
+                        </dl>
+                    </div>
+                </aside>
+
+                <section class="bg-surface-container-lowest border border-outline-variant rounded-xl min-h-0 flex flex-col overflow-hidden">
+                    <div id="aiMessages" class="flex-1 min-h-0 overflow-y-auto p-6 space-y-4">
+                        <div class="bg-surface-container border border-outline-variant rounded-lg p-4 max-w-3xl">
+                            <p class="font-semibold text-on-surface mb-2">您好，我是产销预测智能助手。</p>
+                            <p class="text-sm text-on-surface-variant leading-6">我会优先读取当前成功任务的汇总结果和 SKU 明细，帮助识别缺货、风险 SKU、渠道保障和排产优先级。</p>
+                        </div>
+                    </div>
+
+                    <div class="flex-shrink-0 p-5 border-t border-outline-variant">
+                        <div class="flex gap-3">
+                            <input
+                                id="aiInput"
+                                class="flex-1 px-4 py-3 border border-outline-variant rounded-lg bg-surface-container-lowest focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"
+                                placeholder="输入产销预测问题..."
+                                onkeypress="handleAIKeyPress(event)"
+                            >
+                            <button id="aiSendBtn" class="px-5 py-3 bg-primary text-on-primary rounded-lg hover:opacity-90 flex items-center gap-2" onclick="sendAIMessage()">
+                                <span class="material-symbols-outlined">send</span>
+                                发送
+                            </button>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </section>
+</main>
+
+<script>
+const API_BASE = 'http://localhost:8000';
+let currentUser = null;
+let currentTaskId = null;
+let sessionId = 'assistant_' + Date.now();
+let isAiResponding = false;
+let questionButtonsBaseDisabled = true;
+
+function authHeaders(extra = {}) {
+    const token = localStorage.getItem('accessToken');
+    return token ? { ...extra, Authorization: `Bearer ${token}` } : extra;
+}
+
+window.onload = async () => {
+    const userStr = localStorage.getItem('user');
+    if (!userStr) {
+        window.location.href = 'login-v2.html';
+        return;
+    }
+    currentUser = JSON.parse(userStr);
+    document.getElementById('userName').textContent = currentUser.real_name || currentUser.username;
+    await loadLatestTask();
+};
+
+async function loadLatestTask() {
+    try {
+        setQuestionButtonsDisabled(true);
+        const response = await fetch(`${API_BASE}/api/tasks`, { headers: authHeaders() });
+        const tasks = await response.json();
+        const successTask = tasks.find(task => task.status === 'SUCCESS') || tasks[0];
+
+        if (!successTask) {
+            currentTaskId = null;
+            setTaskLabels(null);
+            setQuestionButtonsDisabled(true);
+            return;
+        }
+
+        currentTaskId = successTask.id;
+        setTaskLabels(successTask);
+        setQuestionButtonsDisabled(false);
+        await loadChatSessions();
+    } catch (error) {
+        console.error('加载任务失败:', error);
+        document.getElementById('taskInfo').textContent = '任务加载失败，请确认后端服务是否运行';
+        setQuestionButtonsDisabled(true);
+    }
+}
+
+function setQuestionButtonsDisabled(disabled) {
+    questionButtonsBaseDisabled = disabled;
+    updateAIControls();
+}
+
+function setAIResponding(responding) {
+    isAiResponding = responding;
+    updateAIControls();
+}
+
+function updateAIControls() {
+    document.querySelectorAll('[data-question-button]').forEach(button => {
+        button.disabled = questionButtonsBaseDisabled || isAiResponding;
+    });
+
+    const input = document.getElementById('aiInput');
+    const sendBtn = document.getElementById('aiSendBtn');
+
+    if (input) {
+        input.disabled = isAiResponding;
+        input.placeholder = isAiResponding ? 'AI 正在回答，请稍候...' : '输入产销预测问题...';
+    }
+
+    if (sendBtn) {
+        sendBtn.disabled = isAiResponding;
+        sendBtn.classList.toggle('opacity-60', isAiResponding);
+        sendBtn.classList.toggle('cursor-not-allowed', isAiResponding);
+        sendBtn.innerHTML = isAiResponding
+            ? '<span class="material-symbols-outlined">hourglass_top</span>回答中'
+            : '<span class="material-symbols-outlined">send</span>发送';
+    }
+}
+
+function setTaskLabels(task) {
+    if (!task) {
+        document.getElementById('taskInfo').textContent = '暂无任务，请先上传数据文件';
+        document.getElementById('taskIdLabel').textContent = '--';
+        document.getElementById('taskFileLabel').textContent = '--';
+        document.getElementById('taskStatusLabel').textContent = '--';
+        return;
+    }
+
+    document.getElementById('taskInfo').textContent = task.file_name || task.task_name || `任务 ${task.id}`;
+    document.getElementById('taskIdLabel').textContent = task.id;
+    document.getElementById('taskFileLabel').textContent = task.file_name || task.task_name || '-';
+    document.getElementById('taskStatusLabel').textContent = task.status || '-';
+}
+
+async function loadChatSessions() {
+    const historyList = document.getElementById('historyList');
+    if (!currentTaskId) {
+        historyList.innerHTML = '<p class="text-sm text-on-surface-variant">暂无历史对话</p>';
+        return;
+    }
+
+    try {
+        const response = await fetch(`${API_BASE}/api/chat/sessions?task_id=${currentTaskId}`, { headers: authHeaders() });
+        const sessions = await response.json();
+        if (!Array.isArray(sessions) || sessions.length === 0) {
+            historyList.innerHTML = '<p class="text-sm text-on-surface-variant">暂无历史对话</p>';
+            return;
+        }
+
+        historyList.innerHTML = sessions.map(session => `
+            <button
+                class="w-full text-left px-3 py-2 rounded border border-outline-variant text-sm text-on-surface hover:bg-surface-container"
+                onclick="loadChatSession('${escapeJs(session.session_id)}')"
+            >
+                <span class="block font-medium truncate">${escapeHtml(session.title || session.last_question || '未命名对话')}</span>
+                <span class="block text-xs text-on-surface-variant mt-1">${session.message_count || 0} 轮对话</span>
+            </button>
+        `).join('');
+    } catch (error) {
+        console.error('加载对话历史失败:', error);
+        historyList.innerHTML = '<p class="text-sm text-on-surface-variant">历史加载失败</p>';
+    }
+}
+
+async function loadChatSession(selectedSessionId) {
+    try {
+        const response = await fetch(`${API_BASE}/api/chat/sessions/${encodeURIComponent(selectedSessionId)}`, { headers: authHeaders() });
+        const data = await response.json();
+        if (!response.ok) {
+            throw new Error(data.detail || '会话加载失败');
+        }
+
+        sessionId = data.session_id;
+        if (data.task_id) {
+            currentTaskId = data.task_id;
+            document.getElementById('taskIdLabel').textContent = data.task_id;
+        }
+
+        const messagesContainer = document.getElementById('aiMessages');
+        messagesContainer.innerHTML = '';
+        data.messages.forEach(item => {
+            addAIMessage(item.question, 'user');
+            addAIMessage(item.answer, 'assistant');
+        });
+    } catch (error) {
+        console.error('加载会话详情失败:', error);
+        addAIMessage(error.message || '会话加载失败，请稍后重试。', 'assistant');
+    }
+}
+
+function startNewSession() {
+    sessionId = 'assistant_' + Date.now();
+    const messagesContainer = document.getElementById('aiMessages');
+    messagesContainer.innerHTML = `
+        <div class="bg-surface-container border border-outline-variant rounded-lg p-4 max-w-3xl">
+            <p class="font-semibold text-on-surface mb-2">您好，我是产销预测智能助手。</p>
+            <p class="text-sm text-on-surface-variant leading-6">我会优先读取当前成功任务的汇总结果和 SKU 明细，帮助识别缺货、风险 SKU、渠道保障和排产优先级。</p>
+        </div>
+    `;
+}
+
+function handleAIKeyPress(event) {
+    if (event.key === 'Enter' && !isAiResponding) sendAIMessage();
+}
+
+function sendMappedQuestion(question) {
+    if (isAiResponding) return;
+    document.getElementById('aiInput').value = question;
+    sendAIMessage();
+}
+
+async function sendAIMessage() {
+    if (isAiResponding) return;
+
+    const input = document.getElementById('aiInput');
+    const message = input.value.trim();
+    if (!message) return;
+
+    if (!currentTaskId) {
+        await loadLatestTask();
+        if (!currentTaskId) {
+            addAIMessage('暂无可分析任务，请先上传并处理数据文件。', 'assistant');
+            return;
+        }
+    }
+
+    setAIResponding(true);
+    addAIMessage(message, 'user');
+    input.value = '';
+
+    const loadingId = addAIMessage('正在读取数据库上下文并分析...', 'assistant');
+
+    try {
+        const response = await fetch(`${API_BASE}/api/chat`, {
+            method: 'POST',
+            headers: authHeaders({ 'Content-Type': 'application/json' }),
+            body: JSON.stringify({
+                session_id: sessionId,
+                message,
+                task_id: currentTaskId
+            })
+        });
+
+        const data = await response.json();
+        document.getElementById(loadingId).remove();
+
+        if (!response.ok) {
+            throw new Error(data.detail || data.message || 'AI模型调用失败');
+        }
+
+        addAIMessage(data.message || 'AI模型未返回内容。', 'assistant');
+        if (data.conversation_id) {
+            await loadChatSessions();
+        }
+
+        if (data.success === false) {
+            return;
+        }
+    } catch (error) {
+        console.error('AI对话失败:', error);
+        const loadingNode = document.getElementById(loadingId);
+        if (loadingNode) loadingNode.remove();
+        addAIMessage(error.message || '抱歉，发生错误。请稍后重试。', 'assistant');
+    } finally {
+        setAIResponding(false);
+        input.focus();
+    }
+}
+
+function addAIMessage(content, role) {
+    const messagesContainer = document.getElementById('aiMessages');
+    const messageId = 'msg_' + Date.now() + '_' + Math.random().toString(16).slice(2);
+    const messageDiv = document.createElement('div');
+    messageDiv.id = messageId;
+
+    if (role === 'user') {
+        messageDiv.className = 'bg-primary text-on-primary rounded-lg p-4 ml-auto max-w-3xl';
+        messageDiv.innerHTML = `<p class="text-sm whitespace-pre-wrap">${escapeHtml(content)}</p>`;
+    } else {
+        messageDiv.className = 'bg-surface-container border border-outline-variant rounded-lg p-4 max-w-3xl';
+        messageDiv.innerHTML = `<p class="text-sm text-on-surface whitespace-pre-wrap leading-6">${escapeHtml(content)}</p>`;
+    }
+
+    messagesContainer.appendChild(messageDiv);
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    return messageId;
+}
+
+function escapeHtml(value) {
+    return String(value)
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#039;');
+}
+
+function escapeJs(value) {
+    return String(value).replaceAll('\\', '\\\\').replaceAll("'", "\\'");
+}
+
+function logout() {
+    if (confirm('确定要退出登录吗？')) {
+        localStorage.removeItem('user');
+        localStorage.removeItem('accessToken');
+        window.location.href = 'login-v2.html';
+    }
+}
+
+async function showNotifications() {
+    const response = await fetch(`${API_BASE}/api/notifications`, { headers: authHeaders() });
+    const data = await response.json();
+    alert((data.items || []).map(item => `${item.title}: ${item.message}`).join('\n'));
+}
+</script>
+</body>
+</html>

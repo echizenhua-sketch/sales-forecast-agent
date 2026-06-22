@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+
+<html class="light" lang="zh-CN"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>产销预测 Agent - 汇总结果</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-surface": "#191b23",
+                    "background": "#faf8ff",
+                    "primary": "#003d9b",
+                    "on-background": "#191b23",
+                    "secondary-fixed": "#82f9be",
+                    "surface-bright": "#faf8ff",
+                    "surface-variant": "#e1e2ec",
+                    "secondary": "#006c47",
+                    "surface-dim": "#d9d9e4",
+                    "surface-container": "#ededf8",
+                    "primary-fixed": "#dae2ff",
+                    "on-primary-container": "#c4d2ff",
+                    "surface-tint": "#0c56d0",
+                    "on-secondary-fixed": "#002113",
+                    "on-tertiary-fixed-variant": "#624000",
+                    "primary-fixed-dim": "#b2c5ff",
+                    "on-error-container": "#93000a",
+                    "surface-container-high": "#e7e7f2",
+                    "on-secondary": "#ffffff",
+                    "on-tertiary": "#ffffff",
+                    "tertiary-fixed": "#ffddb3",
+                    "on-tertiary-fixed": "#291800",
+                    "tertiary": "#5e3c00",
+                    "primary-container": "#0052cc",
+                    "outline-variant": "#c3c6d6",
+                    "tertiary-container": "#7d5200",
+                    "secondary-fixed-dim": "#65dca4",
+                    "outline": "#737685",
+                    "error-container": "#ffdad6",
+                    "inverse-primary": "#b2c5ff",
+                    "inverse-on-surface": "#f0f0fb",
+                    "inverse-surface": "#2e3038",
+                    "on-surface-variant": "#434654",
+                    "on-tertiary-container": "#ffca81",
+                    "surface-container-lowest": "#ffffff",
+                    "on-error": "#ffffff",
+                    "on-primary-fixed-variant": "#0040a2",
+                    "on-primary-fixed": "#001848",
+                    "tertiary-fixed-dim": "#ffb950",
+                    "on-secondary-container": "#00734c",
+                    "error": "#ba1a1a",
+                    "on-secondary-fixed-variant": "#005235",
+                    "secondary-container": "#82f9be",
+                    "surface-container-highest": "#e1e2ec",
+                    "surface-container-low": "#f3f3fd",
+                    "surface": "#faf8ff",
+                    "on-primary": "#ffffff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "base-unit": "4px",
+                    "container-margin": "24px",
+                    "column-gutter": "16px",
+                    "md": "16px",
+                    "sm": "8px",
+                    "lg": "24px",
+                    "xs": "4px",
+                    "xl": "32px"
+            },
+            "fontFamily": {
+                    "body-md": ["Inter", "PingFang SC", "Microsoft YaHei"],
+                    "body-sm": ["Inter", "PingFang SC", "Microsoft YaHei"],
+                    "display-lg": ["Inter", "PingFang SC", "Microsoft YaHei"],
+                    "label-caps": ["Inter", "PingFang SC", "Microsoft YaHei"],
+                    "title-sm": ["Inter", "PingFang SC", "Microsoft YaHei"],
+                    "headline-md": ["Inter", "PingFang SC", "Microsoft YaHei"],
+                    "data-mono": ["JetBrains Mono", "Inter"]
+            },
+            "fontSize": {
+                    "body-md": ["14px", {"lineHeight": "22px", "fontWeight": "400"}],
+                    "body-sm": ["13px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "display-lg": ["30px", {"lineHeight": "38px", "fontWeight": "600"}],
+                    "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700"}],
+                    "title-sm": ["18px", {"lineHeight": "26px", "fontWeight": "600"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "data-mono": ["14px", {"lineHeight": "20px", "fontWeight": "500"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Inter', 'PingFang SC', 'Microsoft YaHei', sans-serif; background-color: #F4F5F7; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .tonal-layer { background-color: #FFFFFF; border: 1px solid #DFE1E6; }
+        .active-row { background-color: rgba(0, 61, 155, 0.05); }
+        .chat-bubble-ai { background-color: #F0F4FF; border-radius: 12px 12px 12px 4px; }
+        .chat-bubble-user { background-color: #E8F5E9; border-radius: 12px 12px 4px 12px; }
+        
+        /* Animation Classes */
+        @keyframes slideInRight {
+            from { transform: translateX(100%); }
+            to { transform: translateX(0); }
+        }
+        .animate-drawer { animation: slideInRight 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+    </style>
+</head>
+<body class="flex min-h-screen text-on-surface">
+<!-- Side Navigation Bar -->
+<aside class="fixed left-0 top-0 h-full z-40 w-[240px] flex flex-col border-r border-outline-variant bg-surface-container-lowest dark:bg-on-surface">
+<div class="p-lg flex items-center gap-sm">
+<div class="w-8 h-8 bg-primary rounded flex items-center justify-center text-on-primary">
+<span class="material-symbols-outlined">analytics</span>
+</div>
+<div>
+<h1 class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed">产销预测 Agent</h1>
+<p class="text-[10px] uppercase tracking-wider text-outline">Enterprise Intelligence</p>
+</div>
+</div>
+<nav class="flex-1 mt-md px-sm">
+<a class="flex items-center gap-md px-md py-sm mb-xs rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-body-md text-body-md">工作台</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm mb-xs rounded-lg bg-primary-container text-on-primary-container font-bold border-r-4 border-primary" href="#">
+<span class="material-symbols-outlined">dataset</span>
+<span class="font-body-md text-body-md">数据汇总</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm mb-xs rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">smart_toy</span>
+<span class="font-body-md text-body-md">智能对话</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm mb-xs rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">history</span>
+<span class="font-body-md text-body-md">操作日志</span>
+</a>
+</nav>
+<div class="p-md border-t border-outline-variant">
+<div class="flex items-center gap-md">
+<img alt="User Avatar" class="w-10 h-10 rounded-full bg-surface-container" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDI2gL76XHY8v_JCQxNY5OgJcf7YQvELrAziUxoepcyf1djipct9DLTNXkKOD3-44v8HjIII8LDj20sPZeWwgVYjnhCmn5Lu6n_LNZGjbihr5u1wGCfKEWo8q-VXvfNbnfTFKCEbkB-YtoMDMWIvFmgmzfTX-pmkGVbqUTPRcP-O6Xio75dEtHsydKkukv1orni8xf9_uLZvpN8X7xbhQQjRqWJ04M6VwHc-dluVuNDTNoILLXCebogYCc2mJd1wboHlACRY7gEDXU"/>
+<div class="overflow-hidden">
+<p class="font-body-md text-body-md font-bold truncate">供应链管理主管</p>
+<p class="text-xs text-outline truncate">admin_sc@enterprise.com</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="ml-[240px] flex-1 flex flex-col min-h-screen">
+<!-- Top Navigation Bar -->
+<header class="fixed top-0 right-0 left-[240px] z-30 h-16 bg-surface dark:bg-on-surface border-b border-outline-variant px-lg flex justify-between items-center">
+<div class="flex items-center flex-1 max-w-xl">
+<div class="relative w-full">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">search</span>
+<input class="w-full bg-surface-container-low border-none rounded-lg pl-10 pr-4 py-2 text-body-sm focus:ring-2 focus:ring-primary/20" placeholder="搜索产品、SKU或物料编码..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-lg">
+<div class="flex items-center gap-sm">
+<button class="p-2 rounded-full hover:bg-surface-container-high relative">
+<span class="material-symbols-outlined text-on-surface-variant">notifications</span>
+<span class="absolute top-1 right-1 w-2 h-2 bg-error rounded-full"></span>
+</button>
+<button class="p-2 rounded-full hover:bg-surface-container-high">
+<span class="material-symbols-outlined text-on-surface-variant">settings</span>
+</button>
+</div>
+<div class="h-8 w-[1px] bg-outline-variant"></div>
+<div class="flex items-center gap-sm">
+<button class="px-4 py-2 rounded-lg font-body-sm text-primary hover:bg-primary/5 transition-colors">陈计划</button>
+<button class="px-4 py-2 bg-primary text-on-primary rounded-lg font-body-sm hover:opacity-90 active:scale-95 transition-all">退出登录</button>
+</div>
+</div>
+</header>
+<!-- Page Content -->
+<div class="mt-16 p-lg space-y-lg flex-1">
+<!-- KPI Cards Bento Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-md">
+<div class="tonal-layer p-lg rounded-xl flex flex-col justify-between group hover:border-primary transition-colors">
+<div class="flex justify-between items-start">
+<span class="text-on-surface-variant font-label-caps text-label-caps">总供应 (Supply)</span>
+<span class="material-symbols-outlined text-primary-container">inventory_2</span>
+</div>
+<div class="mt-4">
+<h3 class="font-headline-md text-headline-md font-bold text-on-surface">1,240,500</h3>
+<p class="text-body-sm text-secondary flex items-center mt-1">
+<span class="material-symbols-outlined text-sm mr-1">trending_up</span>
+<span>较上月 +4.2%</span>
+</p>
+</div>
+</div>
+<div class="tonal-layer p-lg rounded-xl flex flex-col justify-between group hover:border-primary transition-colors">
+<div class="flex justify-between items-start">
+<span class="text-on-surface-variant font-label-caps text-label-caps">合计SAR (Demand)</span>
+<span class="material-symbols-outlined text-primary-container">ads_click</span>
+</div>
+<div class="mt-4">
+<h3 class="font-headline-md text-headline-md font-bold text-on-surface">1,180,200</h3>
+<p class="text-body-sm text-secondary flex items-center mt-1">
+<span class="material-symbols-outlined text-sm mr-1">trending_up</span>
+<span>预测精度 92%</span>
+</p>
+</div>
+</div>
+<div class="tonal-layer p-lg rounded-xl flex flex-col justify-between group hover:border-primary transition-colors">
+<div class="flex justify-between items-start">
+<span class="text-on-surface-variant font-label-caps text-label-caps">SAR差异 (Gap)</span>
+<span class="material-symbols-outlined text-primary-container">difference</span>
+</div>
+<div class="mt-4">
+<h3 class="font-headline-md text-headline-md font-bold text-secondary">+60,300</h3>
+<div class="w-full bg-surface-container h-1.5 rounded-full mt-2 overflow-hidden">
+<div class="bg-secondary h-full w-[85%]"></div>
+</div>
+</div>
+</div>
+<div class="tonal-layer p-lg rounded-xl flex flex-col justify-between group hover:border-primary transition-colors">
+<div class="flex justify-between items-start">
+<span class="text-on-surface-variant font-label-caps text-label-caps">满足率 (Service Level)</span>
+<span class="material-symbols-outlined text-primary-container">verified</span>
+</div>
+<div class="mt-4">
+<h3 class="font-headline-md text-headline-md font-bold text-on-surface">95%</h3>
+<p class="text-body-sm text-outline mt-1">目标设定: 98%</p>
+</div>
+</div>
+</div>
+<!-- Main Table Section -->
+<div class="tonal-layer rounded-xl overflow-hidden flex flex-col">
+<div class="px-lg py-md border-b border-outline-variant flex justify-between items-center bg-surface-container-low">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-primary">analytics</span>
+<h2 class="font-title-sm text-title-sm font-bold">预测及排期汇总表</h2>
+</div>
+<div class="flex items-center gap-md">
+<button class="flex items-center gap-xs text-body-sm text-on-surface-variant hover:text-primary">
+<span class="material-symbols-outlined text-md">filter_list</span> 筛选
+                        </button>
+<button class="flex items-center gap-xs text-body-sm text-on-surface-variant hover:text-primary">
+<span class="material-symbols-outlined text-md">download</span> 导出报表
+                        </button>
+</div>
+</div>
+<div class="overflow-x-auto scrollbar-hide">
+<table class="w-full text-left border-collapse min-w-[1200px]">
+<thead>
+<tr class="bg-surface-container-low border-b border-outline-variant">
+<th class="px-md py-3 font-label-caps text-label-caps text-on-surface-variant">月份</th>
+<th class="px-md py-3 font-label-caps text-label-caps text-on-surface-variant">产品名称</th>
+<th class="px-md py-3 font-label-caps text-label-caps text-on-surface-variant">SKU/物料编码</th>
+<th class="px-md py-3 font-label-caps text-label-caps text-on-surface-variant text-right">4月30日库存</th>
+<th class="px-md py-3 font-label-caps text-label-caps text-on-surface-variant text-right">5月排产</th>
+<th class="px-md py-3 font-label-caps text-label-caps text-on-surface-variant text-right">5月总供应</th>
+<th class="px-md py-3 font-label-caps text-label-caps text-on-surface-variant text-right">5月合计SAR</th>
+<th class="px-md py-3 font-label-caps text-label-caps text-on-surface-variant text-right">5月SAR差异</th>
+<th class="px-md py-3 font-label-caps text-label-caps text-on-surface-variant text-right">可满足合计</th>
+<th class="px-md py-3 font-label-caps text-label-caps text-on-surface-variant text-right">未满足合计</th>
+<th class="px-md py-3 font-label-caps text-label-caps text-on-surface-variant">风险标签</th>
+<th class="px-md py-3 font-label-caps text-label-caps text-on-surface-variant">更新时间</th>
+</tr>
+</thead>
+<tbody class="font-body-md text-body-md">
+<!-- Row 1 -->
+<tr class="border-b border-outline-variant hover:bg-surface-container-high transition-colors cursor-pointer group" onclick="toggleDrawer('row-1')">
+<td class="px-md py-4">5月</td>
+<td class="px-md py-4 font-bold">智能音箱 A</td>
+<td class="px-md py-4 font-data-mono text-data-mono">SKU-001</td>
+<td class="px-md py-4 text-right font-data-mono">10,000</td>
+<td class="px-md py-4 text-right font-data-mono">40,112</td>
+<td class="px-md py-4 text-right font-data-mono">50,112</td>
+<td class="px-md py-4 text-right font-data-mono text-primary font-bold">50,112</td>
+<td class="px-md py-4 text-right font-data-mono">0</td>
+<td class="px-md py-4 text-right font-data-mono">50,112</td>
+<td class="px-md py-4 text-right font-data-mono">0</td>
+<td class="px-md py-4">
+<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-secondary-fixed/30 text-secondary border border-secondary/20">正常</span>
+</td>
+<td class="px-md py-4 text-outline">14:30</td>
+</tr>
+<!-- Row 2 -->
+<tr class="border-b border-outline-variant hover:bg-surface-container-high transition-colors cursor-pointer group" onclick="toggleDrawer('row-2')">
+<td class="px-md py-4">5月</td>
+<td class="px-md py-4 font-bold">无线耳机 B</td>
+<td class="px-md py-4 font-data-mono text-data-mono">SKU-002</td>
+<td class="px-md py-4 text-right font-data-mono">1,000</td>
+<td class="px-md py-4 text-right font-data-mono">5,039</td>
+<td class="px-md py-4 text-right font-data-mono">6,039</td>
+<td class="px-md py-4 text-right font-data-mono text-primary font-bold">36,936</td>
+<td class="px-md py-4 text-right font-data-mono text-error font-bold">-30,897</td>
+<td class="px-md py-4 text-right font-data-mono">6,039</td>
+<td class="px-md py-4 text-right font-data-mono text-error">30,897</td>
+<td class="px-md py-4">
+<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-error-container text-on-error-container border border-error/20">缺货风险</span>
+</td>
+<td class="px-md py-4 text-outline">14:30</td>
+</tr>
+<!-- Row 3 -->
+<tr class="border-b border-outline-variant hover:bg-surface-container-high transition-colors cursor-pointer group" onclick="toggleDrawer('row-3')">
+<td class="px-md py-4">5月</td>
+<td class="px-md py-4 font-bold">智能手表 C</td>
+<td class="px-md py-4 font-data-mono text-data-mono">SKU-003</td>
+<td class="px-md py-4 text-right font-data-mono">16,000</td>
+<td class="px-md py-4 text-right font-data-mono">20,000</td>
+<td class="px-md py-4 text-right font-data-mono">36,000</td>
+<td class="px-md py-4 text-right font-data-mono text-primary font-bold">35,000</td>
+<td class="px-md py-4 text-right font-data-mono text-tertiary font-bold">1,000</td>
+<td class="px-md py-4 text-right font-data-mono">35,000</td>
+<td class="px-md py-4 text-right font-data-mono">0</td>
+<td class="px-md py-4">
+<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-tertiary-fixed text-on-tertiary-fixed border border-tertiary/20">压货风险</span>
+</td>
+<td class="px-md py-4 text-outline">14:30</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</main>
+<!-- Right AI Chat Panel -->
+<aside class="fixed right-0 top-0 h-full w-80 bg-surface border-l border-outline-variant flex flex-col z-50">
+<div class="h-16 border-b border-outline-variant flex items-center px-md justify-between bg-surface-container-low">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-primary font-bold">auto_awesome</span>
+<span class="font-title-sm text-body-md font-bold">AI 智能分析</span>
+</div>
+<button class="p-1 hover:bg-surface-container-high rounded"><span class="material-symbols-outlined text-md">close</span></button>
+</div>
+<div class="flex-1 overflow-y-auto p-md space-y-md">
+<div class="chat-bubble-ai p-sm">
+<p class="font-body-md text-body-md">你好，陈计划。我是产销预测助手。根据当前数据，5月份的整体满足率为95%，但 SKU-002 (无线耳机 B) 存在严重的缺货风险。</p>
+</div>
+<div class="space-y-sm">
+<p class="text-xs font-bold text-outline uppercase px-xs">推荐问题</p>
+<button class="w-full text-left p-sm text-body-sm rounded-lg border border-outline-variant hover:bg-primary/5 hover:border-primary transition-all flex items-center justify-between group">
+                    哪些 SKU 需要优先排产?
+                    <span class="material-symbols-outlined text-sm opacity-0 group-hover:opacity-100 transition-opacity">chevron_right</span>
+</button>
+<button class="w-full text-left p-sm text-body-sm rounded-lg border border-outline-variant hover:bg-primary/5 hover:border-primary transition-all flex items-center justify-between group">
+                    解释 SAR 差异原因
+                    <span class="material-symbols-outlined text-sm opacity-0 group-hover:opacity-100 transition-opacity">chevron_right</span>
+</button>
+</div>
+</div>
+<div class="p-md border-t border-outline-variant space-y-sm bg-white">
+<div class="flex items-center gap-xs">
+<button class="p-1.5 rounded-md hover:bg-surface-container-high"><span class="material-symbols-outlined text-md">attach_file</span></button>
+<button class="p-1.5 rounded-md hover:bg-surface-container-high"><span class="material-symbols-outlined text-md">image</span></button>
+</div>
+<div class="relative">
+<textarea class="w-full border-outline-variant rounded-lg p-md text-body-sm focus:ring-primary focus:border-primary resize-none" placeholder="输入您的问题..." rows="3"></textarea>
+<button class="absolute bottom-3 right-3 bg-primary text-on-primary w-8 h-8 rounded-lg flex items-center justify-center hover:opacity-90 active:scale-95">
+<span class="material-symbols-outlined">send</span>
+</button>
+</div>
+</div>
+</aside>
+<!-- Calculation Logic Drawer (Hidden by Default) -->
+<div class="fixed inset-0 z-[60] invisible" id="logicDrawer">
+<div class="absolute inset-0 bg-on-surface/20 backdrop-blur-sm" onclick="toggleDrawer()"></div>
+<div class="absolute right-0 top-0 h-full w-[400px] bg-white shadow-2xl animate-drawer flex flex-col">
+<div class="h-16 border-b border-outline-variant flex items-center px-lg justify-between bg-primary-fixed">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-primary">functions</span>
+<h3 class="font-title-sm text-title-sm font-bold">计算逻辑详情</h3>
+</div>
+<button class="p-2 hover:bg-white/50 rounded-full" onclick="toggleDrawer()"><span class="material-symbols-outlined">close</span></button>
+</div>
+<div class="flex-1 overflow-y-auto p-lg space-y-xl">
+<!-- Logic Card -->
+<div class="space-y-md">
+<div class="flex items-center justify-between">
+<span class="text-xs font-bold text-outline-variant">计算公式</span>
+<span class="px-2 py-1 bg-surface-container rounded text-xs font-data-mono" id="drawerSku">SKU-001</span>
+</div>
+<div class="tonal-layer p-lg rounded-xl space-y-md">
+<h4 class="font-bold text-primary border-b border-outline-variant pb-2">5月合计SAR</h4>
+<p class="font-data-mono text-body-md leading-relaxed p-md bg-surface-container-lowest rounded border border-dashed border-outline-variant">
+                            5月合计SAR = 省大区SAR + 网络经销商SAR + 海外出口SAR + 内部调拨需求
+                        </p>
+</div>
+<div class="tonal-layer p-lg rounded-xl space-y-md">
+<h4 class="font-bold text-primary border-b border-outline-variant pb-2">5月总供应</h4>
+<p class="font-data-mono text-body-md leading-relaxed p-md bg-surface-container-lowest rounded border border-dashed border-outline-variant">
+                            5月总供应 = 期初库存 (4.30) + 5月排产计划 - 安全库存预留
+                        </p>
+</div>
+<div class="tonal-layer p-lg rounded-xl space-y-md">
+<h4 class="font-bold text-primary border-b border-outline-variant pb-2">SAR差异</h4>
+<p class="font-data-mono text-body-md leading-relaxed p-md bg-surface-container-lowest rounded border border-dashed border-outline-variant">
+                            SAR差异 = 5月总供应 - 5月合计SAR
+                        </p>
+</div>
+</div>
+<!-- Detailed Breakdown Chart Mock -->
+<div class="space-y-sm">
+<p class="text-xs font-bold text-outline uppercase px-xs">SAR 组成细节</p>
+<div class="space-y-sm">
+<div class="flex justify-between items-center text-body-sm">
+<span>省大区需求</span>
+<span class="font-data-mono">35,000</span>
+</div>
+<div class="w-full bg-surface-container h-2 rounded-full overflow-hidden">
+<div class="bg-primary h-full w-[70%]"></div>
+</div>
+<div class="flex justify-between items-center text-body-sm">
+<span>网络经销商</span>
+<span class="font-data-mono">12,112</span>
+</div>
+<div class="w-full bg-surface-container h-2 rounded-full overflow-hidden">
+<div class="bg-primary-container h-full w-[25%]"></div>
+</div>
+<div class="flex justify-between items-center text-body-sm">
+<span>内部调拨</span>
+<span class="font-data-mono">3,000</span>
+</div>
+<div class="w-full bg-surface-container h-2 rounded-full overflow-hidden">
+<div class="bg-outline-variant h-full w-[5%]"></div>
+</div>
+</div>
+</div>
+</div>
+<div class="p-lg border-t border-outline-variant bg-surface-container-low">
+<button class="w-full py-3 bg-primary text-on-primary rounded-lg font-bold hover:opacity-90 active:scale-[0.98] transition-all">导出此 SKU 逻辑明细</button>
+</div>
+</div>
+</div>
+<script>
+        function toggleDrawer(rowId) {
+            const drawer = document.getElementById('logicDrawer');
+            const skuLabel = document.getElementById('drawerSku');
+            
+            if (rowId) {
+                // Mock setting SKU text based on row clicked
+                const skuMap = {
+                    'row-1': 'SKU-001 | 智能音箱 A',
+                    'row-2': 'SKU-002 | 无线耳机 B',
+                    'row-3': 'SKU-003 | 智能手表 C'
+                };
+                skuLabel.innerText = skuMap[rowId] || 'SKU-DETAIL';
+                drawer.classList.remove('invisible');
+                
+                // Add active style to the row
+                document.querySelectorAll('tbody tr').forEach(row => row.classList.remove('active-row'));
+                event.currentTarget.classList.add('active-row');
+            } else {
+                drawer.classList.add('invisible');
+                document.querySelectorAll('tbody tr').forEach(row => row.classList.remove('active-row'));
+            }
+        }
+
+        // Simple Chat Interaction Simulation
+        const chatInput = document.querySelector('textarea');
+        const chatSend = chatInput.nextElementSibling;
+        
+        chatSend.onclick = () => {
+            if (chatInput.value.trim()) {
+                const message = chatInput.value;
+                chatInput.value = '';
+                // In a real app, logic would trigger here
+                alert('AI 正在分析 "' + message + '"，请稍候...');
+            }
+        };
+    </script>
+</body></html>

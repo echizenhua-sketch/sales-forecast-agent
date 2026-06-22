@@ -1,11 +1,22 @@
-fastapi==0.115.0
-uvicorn==0.30.6
-sqlalchemy==2.0.35
-pydantic-settings==2.5.2
-python-multipart==0.0.9
-redis==5.0.8
-rq==1.16.2
+# Web 框架
+fastapi==0.115.6
+uvicorn[standard]==0.34.0
+pydantic==2.10.5
+pydantic-settings==2.7.1
+python-multipart==0.0.20
+
+# 数据库
+sqlalchemy==2.0.36
+pymysql==1.1.1
+cryptography==43.0.3
+
+# Excel 解析
+pandas==2.2.3
 openpyxl==3.1.5
-pandas==2.2.2
-passlib[bcrypt]==1.7.4
-itsdangerous==2.2.0
+
+# 密码加密
+bcrypt==4.2.1
+
+# 工具
+python-dateutil==2.9.0
+requests==2.32.3

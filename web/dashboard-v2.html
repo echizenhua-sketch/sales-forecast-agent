@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html class="light" lang="zh-CN">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>产销预测智能工作台</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet"/>
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#003d9b",
+              "primary-container": "#0052cc",
+              "on-primary": "#ffffff",
+              "on-primary-container": "#c4d2ff",
+              "background": "#faf8ff",
+              "surface": "#faf8ff",
+              "surface-container": "#ededf8",
+              "surface-container-low": "#f3f3fd",
+              "surface-container-lowest": "#ffffff",
+              "on-surface": "#191b23",
+              "on-surface-variant": "#434654",
+              "outline": "#737685",
+              "outline-variant": "#c3c6d6",
+            }
+          }
+        }
+      }
+    </script>
+    <style>
+        body { font-family: "Inter", "PingFang SC", "Microsoft YaHei", sans-serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+    </style>
+</head>
+<body class="overflow-hidden bg-background">
+<!-- SideNavBar -->
+<aside class="fixed left-0 top-0 h-full z-40 w-[240px] flex flex-col bg-surface-container-lowest border-r border-outline-variant">
+    <div class="p-6 flex items-center gap-2">
+        <div class="w-8 h-8 bg-primary rounded flex items-center justify-center">
+            <span class="material-symbols-outlined text-on-primary">insights</span>
+        </div>
+        <div>
+            <h1 class="text-xl font-bold text-primary">产销预测 Agent</h1>
+            <p class="text-xs text-on-surface-variant opacity-70">Enterprise Intelligence</p>
+        </div>
+    </div>
+    <nav class="flex-1 px-2 mt-4">
+        <a class="flex items-center gap-4 px-4 py-2 mb-1 rounded bg-primary-container text-on-primary-container font-bold border-r-4 border-primary" href="dashboard-v2.html">
+            <span class="material-symbols-outlined">dashboard</span>
+            <span>工作台</span>
+        </a>
+        <a class="flex items-center gap-4 px-4 py-2 mb-1 rounded text-on-surface-variant hover:bg-surface-container" href="results-v2.html">
+            <span class="material-symbols-outlined">dataset</span>
+            <span>数据汇总</span>
+        </a>
+        <a class="flex items-center gap-4 px-4 py-2 mb-1 rounded text-on-surface-variant hover:bg-surface-container" href="assistant-v2.html">
+            <span class="material-symbols-outlined">smart_toy</span>
+            <span>智能助手</span>
+        </a>
+        <a class="flex items-center gap-4 px-4 py-2 mb-1 rounded text-on-surface-variant hover:bg-surface-container" href="logs-v2.html">
+            <span class="material-symbols-outlined">history</span>
+            <span>操作日志</span>
+        </a>
+    </nav>
+    <div class="p-6 border-t border-outline-variant flex items-center gap-3">
+        <div class="w-10 h-10 rounded-full bg-primary text-on-primary flex items-center justify-center font-bold">
+            A
+        </div>
+        <div class="flex-1 min-w-0">
+            <p class="font-bold text-on-surface truncate" id="userName">管理员</p>
+            <p class="text-sm text-on-surface-variant truncate">v2.2.0 Pro</p>
+        </div>
+    </div>
+</aside>
+
+<!-- TopNavBar -->
+<header class="fixed top-0 right-0 left-[240px] z-30 h-16 px-6 flex justify-between items-center bg-surface border-b border-outline-variant">
+    <div class="flex items-center gap-6 flex-1">
+        <div class="relative w-full max-w-md">
+            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">search</span>
+            <input id="globalSearch" class="w-full pl-10 pr-4 py-2 bg-surface-container-low border border-outline-variant rounded-lg focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary" placeholder="搜索预测结果或任务..." type="text" onkeypress="handleSearchKey(event)"/>
+        </div>
+    </div>
+    <div class="flex items-center gap-4">
+        <button class="p-2 rounded-full text-on-surface-variant hover:text-primary" onclick="showNotifications()">
+            <span class="material-symbols-outlined">notifications</span>
+        </button>
+        <button class="p-2 rounded-full text-on-surface-variant hover:text-primary" onclick="location.href='settings-v2.html'">
+            <span class="material-symbols-outlined">settings</span>
+        </button>
+        <div class="h-6 w-[1px] bg-outline-variant mx-2"></div>
+        <button class="px-6 py-2 bg-primary text-on-primary rounded hover:opacity-90" onclick="logout()">退出登录</button>
+    </div>
+</header>
+
+<!-- Main Content -->
+<main class="ml-[240px] mt-16 h-[calc(100vh-64px)] overflow-y-auto bg-background">
+    <section class="p-6">
+        <div class="max-w-6xl mx-auto space-y-6">
+            <!-- Page Header -->
+            <div class="mb-8">
+                <h2 class="text-2xl font-bold text-on-surface">工作台</h2>
+                <p class="text-on-surface-variant mt-1">开始新的产销预测任务</p>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="grid grid-cols-4 gap-4 mb-6">
+                <div class="bg-surface-container-lowest border border-outline-variant rounded-lg p-6">
+                    <p class="text-sm text-on-surface-variant mb-2">总供应</p>
+                    <p class="text-3xl font-bold text-on-surface" id="statSupply">--</p>
+                </div>
+                <div class="bg-surface-container-lowest border border-outline-variant rounded-lg p-6">
+                    <p class="text-sm text-on-surface-variant mb-2">合计SAR</p>
+                    <p class="text-3xl font-bold text-on-surface" id="statSar">--</p>
+                </div>
+                <div class="bg-surface-container-lowest border border-outline-variant rounded-lg p-6">
+                    <p class="text-sm text-on-surface-variant mb-2">SAR差异</p>
+                    <p class="text-3xl font-bold text-on-surface" id="statGap">--</p>
+                </div>
+                <div class="bg-surface-container-lowest border border-outline-variant rounded-lg p-6">
+                    <p class="text-sm text-on-surface-variant mb-2">满足率</p>
+                    <p class="text-3xl font-bold text-on-surface" id="statServiceLevel">--</p>
+                </div>
+            </div>
+
+            <!-- Upload Section -->
+            <div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-8">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-lg font-semibold text-on-surface flex items-center gap-2">
+                        <span class="w-6 h-6 rounded-full bg-primary text-on-primary flex items-center justify-center text-xs font-bold">1</span>
+                        第一步：上传产销预测及供应表
+                    </h3>
+                    <a class="text-primary text-sm hover:underline flex items-center gap-1" href="#">
+                        <span class="material-symbols-outlined text-base">download</span> 下载模版
+                    </a>
+                </div>
+                <!-- Upload Zone -->
+                <div class="relative border-2 border-dashed border-outline-variant rounded-lg p-12 flex flex-col items-center justify-center bg-surface-container-low hover:bg-primary/5 hover:border-primary cursor-pointer" id="dropZone" onclick="document.getElementById('fileInput').click()">
+                    <div class="w-16 h-16 bg-surface-container rounded-full flex items-center justify-center mb-4">
+                        <span class="material-symbols-outlined text-primary text-4xl">upload_file</span>
+                    </div>
+                    <p class="text-lg font-medium text-on-surface mb-2">拖拽文件到此处，或点击上传</p>
+                    <p class="text-sm text-on-surface-variant">支持 .xlsx, .xls, .csv 格式，最大 50MB</p>
+                </div>
+                <input type="file" id="fileInput" accept=".xlsx,.xls,.csv" class="hidden" onchange="handleFileSelect(event)">
+                <div id="uploadProgress" class="mt-4 hidden">
+                    <div class="h-2 bg-surface-container rounded-full overflow-hidden">
+                        <div id="progressBar" class="h-full bg-primary transition-all duration-300" style="width: 0%"></div>
+                    </div>
+                    <p id="uploadStatus" class="text-sm text-on-surface-variant mt-2"></p>
+                </div>
+            </div>
+
+            <!-- Recent Tasks -->
+            <div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-8">
+                <h3 class="text-lg font-semibold text-on-surface mb-6">最近处理</h3>
+                <div id="recentList" class="space-y-3">
+                    <div class="text-center text-on-surface-variant py-8">暂无处理记录</div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<script>
+const API_BASE = 'http://localhost:8000';
+let currentUser = null;
+let currentTaskId = null;
+
+function authHeaders(extra = {}) {
+    const token = localStorage.getItem('accessToken');
+    return token ? { ...extra, Authorization: `Bearer ${token}` } : extra;
+}
+
+window.onload = async () => {
+    const userStr = localStorage.getItem('user');
+    if (!userStr) {
+        window.location.href = 'login-v2.html';
+        return;
+    }
+    currentUser = JSON.parse(userStr);
+    document.getElementById('userName').textContent = currentUser.real_name || currentUser.username;
+    await loadRecentTasks();
+};
+
+async function loadRecentTasks() {
+    try {
+        const response = await fetch(`${API_BASE}/api/tasks`, { headers: authHeaders() });
+        const tasks = await response.json();
+        const recentList = document.getElementById('recentList');
+
+        if (tasks.length === 0) {
+            recentList.innerHTML = '<div class="text-center text-on-surface-variant py-8">暂无处理记录</div>';
+        } else {
+            recentList.innerHTML = tasks.slice(0, 5).map(task => `
+                <div class="flex items-center justify-between p-4 bg-surface-container rounded-lg hover:bg-surface-container-low cursor-pointer" onclick="viewTask(${task.id})">
+                    <div class="flex items-center gap-3">
+                        <span class="material-symbols-outlined text-primary">description</span>
+                        <div>
+                            <p class="font-medium text-on-surface">${task.file_name}</p>
+                            <p class="text-sm text-on-surface-variant">${new Date(task.created_at).toLocaleString('zh-CN')}</p>
+                        </div>
+                    </div>
+                    <span class="material-symbols-outlined text-on-surface-variant">chevron_right</span>
+                </div>
+            `).join('');
+
+            const completedTask = tasks.find(t => t.status === 'SUCCESS');
+            if (completedTask) {
+                await loadTaskSummary(completedTask.id);
+            }
+        }
+    } catch (error) {
+        console.error('加载任务列表失败:', error);
+    }
+}
+
+async function loadTaskSummary(taskId) {
+    try {
+        const response = await fetch(`${API_BASE}/api/tasks/${taskId}/summary`, { headers: authHeaders() });
+        const summary = await response.json();
+        document.getElementById('statSupply').textContent = formatNumber(summary.total_supply);
+        document.getElementById('statSar').textContent = formatNumber(summary.total_sar);
+        document.getElementById('statGap').textContent = formatNumber(summary.total_gap);
+        document.getElementById('statServiceLevel').textContent = summary.service_level.toFixed(1) + '%';
+    } catch (error) {
+        console.error('加载汇总数据失败:', error);
+    }
+}
+
+function viewTask(taskId) {
+    window.location.href = `results-v2.html?taskId=${taskId}`;
+}
+
+function handleFileSelect(event) {
+    const file = event.target.files[0];
+    if (file) uploadFile(file);
+}
+
+async function uploadFile(file) {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('task_name', file.name);
+
+    const progressDiv = document.getElementById('uploadProgress');
+    const progressBar = document.getElementById('progressBar');
+    const uploadStatus = document.getElementById('uploadStatus');
+
+    progressDiv.classList.remove('hidden');
+    progressBar.style.width = '0%';
+    uploadStatus.textContent = '上传中...';
+
+    try {
+        // 步骤1：上传
+        progressBar.style.width = '30%';
+        const response = await fetch(`${API_BASE}/api/tasks/upload`, {
+            method: 'POST',
+            headers: authHeaders(),
+            body: formData
+        });
+
+        const task = await response.json();
+
+        if (response.ok) {
+            currentTaskId = task.id;
+
+            window.location.href = `processing.html?taskId=${task.id}`;
+            return;
+
+            // 步骤3：完成
+            progressBar.style.width = '100%';
+            uploadStatus.textContent = '✓ 处理完成！正在加载数据...';
+
+            // 刷新数据
+            await loadRecentTasks();
+            await loadTaskSummary(task.id);
+
+            // 隐藏进度条
+            setTimeout(() => {
+                progressDiv.classList.add('hidden');
+                uploadStatus.textContent = '✓ 数据已加载，可以开始分析了';
+            }, 1000);
+        } else {
+            uploadStatus.textContent = `✗ ${task.detail || '上传失败'}`;
+        }
+    } catch (error) {
+        console.error('上传失败:', error);
+        uploadStatus.textContent = '✗ 网络错误，请重试';
+    }
+}
+
+async function waitForTaskComplete(taskId, maxWait = 30000) {
+    const startTime = Date.now();
+    while (Date.now() - startTime < maxWait) {
+        try {
+            const response = await fetch(`${API_BASE}/api/tasks/${taskId}`, { headers: authHeaders() });
+            const task = await response.json();
+
+            if (task.status === 'SUCCESS') {
+                return true;
+            } else if (task.status === 'FAILED') {
+                throw new Error(task.error_message || '处理失败');
+            }
+
+            await new Promise(resolve => setTimeout(resolve, 1000));
+        } catch (error) {
+            console.error('检查任务状态失败:', error);
+        }
+    }
+    throw new Error('处理超时');
+}
+
+function formatNumber(num) {
+    return Math.round(num).toLocaleString('zh-CN');
+}
+
+function logout() {
+    if (confirm('确定要退出登录吗？')) {
+        localStorage.removeItem('user');
+        localStorage.removeItem('accessToken');
+        window.location.href = 'login-v2.html';
+    }
+}
+
+async function showNotifications() {
+    const response = await fetch(`${API_BASE}/api/notifications`, { headers: authHeaders() });
+    const data = await response.json();
+    alert((data.items || []).map(item => `${item.title}: ${item.message}`).join('\n'));
+}
+
+function handleSearchKey(event) {
+    if (event.key === 'Enter') {
+        const q = event.target.value.trim();
+        if (q) window.location.href = `results-v2.html?q=${encodeURIComponent(q)}`;
+    }
+}
+
+// 拖拽上传
+const dropZone = document.getElementById('dropZone');
+dropZone.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    dropZone.classList.add('border-primary');
+});
+
+dropZone.addEventListener('dragleave', () => {
+    dropZone.classList.remove('border-primary');
+});
+
+dropZone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    dropZone.classList.remove('border-primary');
+    const file = e.dataTransfer.files[0];
+    if (file) uploadFile(file);
+});
+</script>
+</body>
+</html>

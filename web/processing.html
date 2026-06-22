@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>文件处理中 - 产销预测智能工作台</title>
+    <style>
+        body { margin: 0; font-family: "Microsoft YaHei", Arial, sans-serif; background: #f6f7fb; color: #191b23; }
+        .wrap { max-width: 760px; margin: 56px auto; background: white; border: 1px solid #dfe3f0; border-radius: 10px; padding: 32px; }
+        h1 { margin: 0 0 8px; color: #003d9b; }
+        .muted { color: #737685; }
+        .file { margin: 24px 0; padding: 16px; background: #f3f5fb; border-radius: 8px; }
+        .bar { height: 12px; background: #e3e6ef; border-radius: 999px; overflow: hidden; margin: 16px 0 24px; }
+        .fill { height: 100%; width: 0; background: #003d9b; transition: width .25s; }
+        .steps { display: grid; gap: 12px; }
+        .step { display: flex; justify-content: space-between; padding: 14px 16px; border: 1px solid #dfe3f0; border-radius: 8px; }
+        .done { background: #ecfdf3; border-color: #b7e4c7; }
+        .active { background: #eef4ff; border-color: #8ab4ff; }
+        .failed { background: #fff1f2; border-color: #fecdd3; }
+        .actions { margin-top: 28px; display: flex; gap: 12px; justify-content: flex-end; }
+        button { border: 1px solid #c3c6d6; background: white; border-radius: 8px; padding: 10px 18px; cursor: pointer; }
+        .primary { background: #003d9b; color: white; border-color: #003d9b; }
+        .error { display: none; margin-top: 18px; padding: 12px; background: #fff1f2; border: 1px solid #fecdd3; border-radius: 8px; color: #991b1b; }
+    </style>
+</head>
+<body>
+<div class="wrap">
+    <h1>文件处理中</h1>
+    <p class="muted">系统正在按“上传、解析、计算、存库”处理任务。</p>
+    <div class="file">
+        <strong id="fileName">正在加载任务...</strong>
+        <div class="muted" id="fileMeta">任务编号：--</div>
+    </div>
+    <div>
+        <span id="statusText">等待中</span>
+        <strong style="float:right" id="statusPercent">0%</strong>
+    </div>
+    <div class="bar"><div class="fill" id="progressFill"></div></div>
+    <div class="steps">
+        <div class="step" id="stepUpload"><span>文件上传</span><span>等待中</span></div>
+        <div class="step" id="stepParse"><span>数据解析</span><span>等待中</span></div>
+        <div class="step" id="stepCalc"><span>汇总计算</span><span>等待中</span></div>
+        <div class="step" id="stepStore"><span>结果存库</span><span>等待中</span></div>
+    </div>
+    <div class="error" id="errorBox"></div>
+    <div class="actions">
+        <button onclick="location.href='dashboard-v2.html'">返回工作台</button>
+        <button class="primary" id="resultBtn" onclick="viewResult()" disabled>查看结果</button>
+    </div>
+</div>
+<script>
+const API_BASE = 'http://localhost:8000';
+const taskId = new URLSearchParams(location.search).get('taskId');
+let timer = null;
+
+function authHeaders(extra = {}) {
+    const token = localStorage.getItem('accessToken');
+    return token ? { ...extra, Authorization: `Bearer ${token}` } : extra;
+}
+
+window.onload = () => {
+    if (!taskId) {
+        showError('缺少任务编号');
+        return;
+    }
+    pollTask();
+    timer = setInterval(pollTask, 1500);
+};
+
+async function pollTask() {
+    try {
+        const response = await fetch(`${API_BASE}/api/tasks/${taskId}`, { headers: authHeaders() });
+        const task = await response.json();
+        if (!response.ok) throw new Error(task.detail || '任务查询失败');
+        renderTask(task);
+        if (['SUCCESS', 'FAILED'].includes(task.status)) clearInterval(timer);
+    } catch (error) {
+        clearInterval(timer);
+        showError(error.message);
+    }
+}
+
+function renderTask(task) {
+    document.getElementById('fileName').textContent = task.file_name || task.task_name || `任务 ${task.id}`;
+    document.getElementById('fileMeta').textContent = `任务编号：${task.id} | 文件大小：${formatSize(task.file_size)} | 创建时间：${new Date(task.created_at).toLocaleString('zh-CN')}`;
+    document.getElementById('progressFill').style.width = `${task.progress || 0}%`;
+    document.getElementById('statusPercent').textContent = `${task.progress || 0}%`;
+    document.getElementById('statusText').textContent = statusText(task.status);
+    setSteps(task.status, task.progress || 0);
+    if (task.status === 'SUCCESS') {
+        document.getElementById('resultBtn').disabled = false;
+    }
+    if (task.status === 'FAILED') {
+        showError(task.error_message || '处理失败');
+    }
+}
+
+function setSteps(status, progress) {
+    const states = [
+        ['stepUpload', progress >= 10],
+        ['stepParse', progress >= 30],
+        ['stepCalc', progress >= 60],
+        ['stepStore', progress >= 100],
+    ];
+    states.forEach(([id, done], idx) => {
+        const el = document.getElementById(id);
+        el.className = 'step';
+        el.lastElementChild.textContent = done ? '已完成' : '等待中';
+        if (done) el.classList.add('done');
+        if (!done && status !== 'FAILED' && progress >= idx * 25) {
+            el.classList.add('active');
+            el.lastElementChild.textContent = '处理中';
+        }
+        if (status === 'FAILED' && !done) {
+            el.classList.add('failed');
+            el.lastElementChild.textContent = '失败';
+        }
+    });
+}
+
+function statusText(status) {
+    return {
+        UPLOADING: '文件上传中',
+        PARSING: '数据解析中',
+        CALCULATING: '汇总计算中',
+        SUCCESS: '处理完成',
+        FAILED: '处理失败',
+    }[status] || status || '等待中';
+}
+
+function showError(message) {
+    const box = document.getElementById('errorBox');
+    box.textContent = `错误：${message}`;
+    box.style.display = 'block';
+}
+
+function viewResult() {
+    location.href = `results-v2.html?taskId=${taskId}`;
+}
+
+function formatSize(value) {
+    if (!value) return '--';
+    return `${(value / 1024 / 1024).toFixed(2)} MB`;
+}
+</script>
+</body>
+</html>

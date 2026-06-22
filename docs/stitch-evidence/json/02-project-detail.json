@@ -1,0 +1,183 @@
+﻿{
+    "name":  "projects/4624671007192108229",
+    "title":  "产销预测智能工作台",
+    "visibility":  "PRIVATE",
+    "createTime":  "2026-06-16T03:33:39.353704Z",
+    "updateTime":  "2026-06-16T04:04:01.332732Z",
+    "projectType":  "TEXT_TO_UI_PRO",
+    "thumbnailScreenshot":  {
+                                "name":  "projects/4624671007192108229/files/687dd625ce794285947c75717669c4f0",
+                                "downloadUrl":  "https://lh3.googleusercontent.com/aida/AP1WRLtY4UETG66gXs137ZZ5ZPH-apGNrZJaAgdAVkWcv0DiafekjcILdwl1rDbD9HpHmjwLd7ISVbY89NOHWuMesueA5vqlBLsiajJHisVwaPxx59ygX5emueGvDv88vxpF7NplTMK90hKUbEa1t9R46bAHARn9zT_WBFL2XZT_Hrceoj56YEvMYuC49HTvj-1gaPx9HKIobS60CEqcBy0qz8GuEXW-YwdXXvXh4CvMjPuiqt8F7oR3sP4ADQ"
+                            },
+    "origin":  "STITCH",
+    "deviceType":  "DESKTOP",
+    "designTheme":  {
+                        "colorMode":  "LIGHT",
+                        "font":  "INTER",
+                        "roundness":  "ROUND_FOUR",
+                        "customColor":  "#0052cc",
+                        "headlineFont":  "INTER",
+                        "bodyFont":  "INTER",
+                        "labelFont":  "INTER",
+                        "namedColors":  {
+                                            "background":  "#faf8ff",
+                                            "error":  "#ba1a1a",
+                                            "error_container":  "#ffdad6",
+                                            "inverse_on_surface":  "#f0f0fb",
+                                            "inverse_primary":  "#b2c5ff",
+                                            "inverse_surface":  "#2e3038",
+                                            "on_background":  "#191b23",
+                                            "on_error":  "#ffffff",
+                                            "on_error_container":  "#93000a",
+                                            "on_primary":  "#ffffff",
+                                            "on_primary_container":  "#c4d2ff",
+                                            "on_primary_fixed":  "#001848",
+                                            "on_primary_fixed_variant":  "#0040a2",
+                                            "on_secondary":  "#ffffff",
+                                            "on_secondary_container":  "#00734c",
+                                            "on_secondary_fixed":  "#002113",
+                                            "on_secondary_fixed_variant":  "#005235",
+                                            "on_surface":  "#191b23",
+                                            "on_surface_variant":  "#434654",
+                                            "on_tertiary":  "#ffffff",
+                                            "on_tertiary_container":  "#ffca81",
+                                            "on_tertiary_fixed":  "#291800",
+                                            "on_tertiary_fixed_variant":  "#624000",
+                                            "outline":  "#737685",
+                                            "outline_variant":  "#c3c6d6",
+                                            "primary":  "#003d9b",
+                                            "primary_container":  "#0052cc",
+                                            "primary_fixed":  "#dae2ff",
+                                            "primary_fixed_dim":  "#b2c5ff",
+                                            "secondary":  "#006c47",
+                                            "secondary_container":  "#82f9be",
+                                            "secondary_fixed":  "#82f9be",
+                                            "secondary_fixed_dim":  "#65dca4",
+                                            "surface":  "#faf8ff",
+                                            "surface_bright":  "#faf8ff",
+                                            "surface_container":  "#ededf8",
+                                            "surface_container_high":  "#e7e7f2",
+                                            "surface_container_highest":  "#e1e2ec",
+                                            "surface_container_low":  "#f3f3fd",
+                                            "surface_container_lowest":  "#ffffff",
+                                            "surface_dim":  "#d9d9e4",
+                                            "surface_tint":  "#0c56d0",
+                                            "surface_variant":  "#e1e2ec",
+                                            "tertiary":  "#5e3c00",
+                                            "tertiary_container":  "#7d5200",
+                                            "tertiary_fixed":  "#ffddb3",
+                                            "tertiary_fixed_dim":  "#ffb950"
+                                        },
+                        "designMd":  "---\nname: Supply-Demand Intelligence System\ncolors:\n  surface: \u0027#faf8ff\u0027\n  surface-dim: \u0027#d9d9e4\u0027\n  surface-bright: \u0027#faf8ff\u0027\n  surface-container-lowest: \u0027#ffffff\u0027\n  surface-container-low: \u0027#f3f3fd\u0027\n  surface-container: \u0027#ededf8\u0027\n  surface-container-high: \u0027#e7e7f2\u0027\n  surface-container-highest: \u0027#e1e2ec\u0027\n  on-surface: \u0027#191b23\u0027\n  on-surface-variant: \u0027#434654\u0027\n  inverse-surface: \u0027#2e3038\u0027\n  inverse-on-surface: \u0027#f0f0fb\u0027\n  outline: \u0027#737685\u0027\n  outline-variant: \u0027#c3c6d6\u0027\n  surface-tint: \u0027#0c56d0\u0027\n  primary: \u0027#003d9b\u0027\n  on-primary: \u0027#ffffff\u0027\n  primary-container: \u0027#0052cc\u0027\n  on-primary-container: \u0027#c4d2ff\u0027\n  inverse-primary: \u0027#b2c5ff\u0027\n  secondary: \u0027#006c47\u0027\n  on-secondary: \u0027#ffffff\u0027\n  secondary-container: \u0027#82f9be\u0027\n  on-secondary-container: \u0027#00734c\u0027\n  tertiary: \u0027#5e3c00\u0027\n  on-tertiary: \u0027#ffffff\u0027\n  tertiary-container: \u0027#7d5200\u0027\n  on-tertiary-container: \u0027#ffca81\u0027\n  error: \u0027#ba1a1a\u0027\n  on-error: \u0027#ffffff\u0027\n  error-container: \u0027#ffdad6\u0027\n  on-error-container: \u0027#93000a\u0027\n  primary-fixed: \u0027#dae2ff\u0027\n  primary-fixed-dim: \u0027#b2c5ff\u0027\n  on-primary-fixed: \u0027#001848\u0027\n  on-primary-fixed-variant: \u0027#0040a2\u0027\n  secondary-fixed: \u0027#82f9be\u0027\n  secondary-fixed-dim: \u0027#65dca4\u0027\n  on-secondary-fixed: \u0027#002113\u0027\n  on-secondary-fixed-variant: \u0027#005235\u0027\n  tertiary-fixed: \u0027#ffddb3\u0027\n  tertiary-fixed-dim: \u0027#ffb950\u0027\n  on-tertiary-fixed: \u0027#291800\u0027\n  on-tertiary-fixed-variant: \u0027#624000\u0027\n  background: \u0027#faf8ff\u0027\n  on-background: \u0027#191b23\u0027\n  surface-variant: \u0027#e1e2ec\u0027\ntypography:\n  display-lg:\n    fontFamily: Inter, PingFang SC, Microsoft YaHei\n    fontSize: 30px\n    fontWeight: \u0027600\u0027\n    lineHeight: 38px\n  headline-md:\n    fontFamily: Inter, PingFang SC, Microsoft YaHei\n    fontSize: 24px\n    fontWeight: \u0027600\u0027\n    lineHeight: 32px\n  title-sm:\n    fontFamily: Inter, PingFang SC, Microsoft YaHei\n    fontSize: 18px\n    fontWeight: \u0027600\u0027\n    lineHeight: 26px\n  body-md:\n    fontFamily: Inter, PingFang SC, Microsoft YaHei\n    fontSize: 14px\n    fontWeight: \u0027400\u0027\n    lineHeight: 22px\n  body-sm:\n    fontFamily: Inter, PingFang SC, Microsoft YaHei\n    fontSize: 13px\n    fontWeight: \u0027400\u0027\n    lineHeight: 20px\n  label-caps:\n    fontFamily: Inter, PingFang SC, Microsoft YaHei\n    fontSize: 12px\n    fontWeight: \u0027700\u0027\n    lineHeight: 16px\n    letterSpacing: 0.05em\n  data-mono:\n    fontFamily: JetBrains Mono, Inter\n    fontSize: 14px\n    fontWeight: \u0027500\u0027\n    lineHeight: 20px\nrounded:\n  sm: 0.125rem\n  DEFAULT: 0.25rem\n  md: 0.375rem\n  lg: 0.5rem\n  xl: 0.75rem\n  full: 9999px\nspacing:\n  base-unit: 4px\n  xs: 4px\n  sm: 8px\n  md: 16px\n  lg: 24px\n  xl: 32px\n  container-margin: 24px\n  column-gutter: 16px\n---\n\n## 品牌与风格\n本设计系统旨在为企业级供应链预测工具提供一个极致专业、精准且高效的操作环境。设计核心在于“数据驱动的理性”与“决策的高效性”。\n\n**设计特征：**\n- **极简主义 (Minimalism):** 移除所有多余的视觉修饰，确保用户的注意力集中在核心指标和预测趋势上。\n- **功能导向:** 界面元素严格遵循功能逻辑，通过严谨的对齐和对比来建立清晰的信息层级。\n- **专业克制:** 采用标准的商务色调与严谨的排版，营造出稳定、可靠的软件氛围，降低长时间处理复杂数据时的视觉疲劳。\n- **高信息密度:** 针对桌面端专业用户优化，在有限的屏幕空间内展示尽可能多的有效信息，减少滚动与跳转。\n\n## 色彩系统\n色彩的应用遵循“语义化”原则，确保用户能够通过颜色快速识别状态与风险。\n\n- **品牌主色 (Corporate Blue):** 用于主按钮、选中状态及核心导航，传达专业感与信赖感。\n- **功能性色彩:** \n  - **成功绿 (#36B37E):** 用于库存充足、预测达成等正向状态。\n  - **警示橙 (#FFAB00):** 用于缺货风险、供应链延迟等需要关注的异常。\n  - **危险红 (#FF5630):** 用于严重过剩、需求断裂等紧急干预项。\n- **中性色阶:** 采用细腻的灰色梯度处理背景 (`#F4F5F7`)、边框 (`#DFE1E6`) 与文本 (`#172B4D`)，确保界面层级分明且对比适度。\n\n## 字体排版\n本设计系统选用 **Inter** 作为英文与数字的基础字体，因其在屏幕显示上具有极佳的可读性，尤其适合展示大量数字表格。中文字体优先调用系统默认的 **PingFang SC** (macOS) 或 **Microsoft YaHei** (Windows)。\n\n**排版原则：**\n- **数字处理:** 在报表与 KPI 卡片中，推荐对数值使用等宽字符处理，以确保垂直对齐时的整齐度。\n- **层级区分:** 通过字号大小与字重的组合来区分标题、正文与注释。\n- **紧凑性:** 默认行高设定在 1.5 倍左右，在保持可读性的前提下尽可能压缩垂直空间。\n\n## 布局与间距\n本设计系统采用 **4px 步进的网格系统**。所有的布局间距、内边距及组件尺寸均应为 4 的倍数，以确保跨平台显示的精确性。\n\n**布局模型：**\n- **固定侧边栏 + 流式内容区:** 导航栏宽度固定（240px），右侧工作区根据屏幕宽度自动伸缩。\n- **12 列栅格系统:** 内容区内部采用 12 列栅格，槽宽 (Gutter) 统一为 16px。\n- **高密度填充:** 列表与表格的单元格内边距设定为 8px (sm) 或 12px，以支撑高密度的业务数据展示。\n\n## 深度与层级\n为了维持系统的极简感，本设计系统不依赖重阴影，而是通过 **“色调层级” (Tonal Layers)** 和 **“细微边框” (Low-contrast Outlines)** 来构建空间深度。\n\n- **基础层:** 背景色采用 `#F4F5F7`，作为底层画布。\n- **容器层:** 所有的卡片、数据表格和操作面板均使用纯白色背景 (`#FFFFFF`)，并配以 1px 的 `#DFE1E6` 描边。\n- **悬浮层:** 仅在下拉菜单、气泡提示 (Tooltip) 和模态框中使用轻微的、弥散度高的阴影（Blur: 8px, Alpha: 0.1），用于表示该元素在 Z 轴的最上方。\n- **交互反馈:** 悬浮状态通常通过背景色的微调（如变深 5%）而非阴影变化来体现。\n\n## 形状\n本设计系统采用 **“软质几何” (Soft)** 风格。\n\n- **默认圆角:** 4px (0.25rem)。适用于按钮、输入框、标签和卡片。这种小半径圆角既保留了企业的严谨感，又比纯直角更具现代感且易于视觉对齐。\n- **状态圆角:** 状态标签 (Status Badges) 可使用半圆角 (Pill) 以区分于可交互按钮。\n\n## 组件库指南\n\n### 1. 高密度数据表格 (Data Tables)\n- **表头:** 背景色采用浅灰色 (`#F4F5F7`)，文本加粗，支持点击排序。\n- **单元格:** 默认高度 40px。数字列右对齐，文本列左对齐。\n- **交互:** 鼠标悬停行高亮显示，支持行选中操作。\n\n### 2. KPI 核心卡片 (KPI Cards)\n- **结构:** 包含指标名称、主数值、同比/环比趋势图标及小型迷你趋势图 (Sparkline)。\n- **视觉:** 使用强烈的字重对比突出核心数字，趋势图标根据正负值严格遵循“绿升红降”或“红升绿降”的业务语义。\n\n### 3. AI 聊天界面 (AI Chat Interface)\n- **对话框:** 采用非对称设计。AI 回复使用浅蓝色背景以示区分，用户输入框保持在底部固定位置。\n- **反馈:** 内置快速操作指令（例如：“重新预测”、“导出异常报表”）。\n\n### 4. 文件上传区 (Upload Zones)\n- **样式:** 采用虚线边框，背景在拖入文件时变为浅蓝色。提供明确的文件格式限制说明和进度条。\n\n### 5. 状态徽章 (Status Badges)\n- **视觉:** 采用浅色背景 (Light tint) 搭配深色文字。例如，“待处理”使用浅橙色背景与深橙色文字。\n\n### 6. 输入与表单 (Inputs)\n- **反馈:** 聚焦状态下边框变为品牌主色 (2px solid)，并带有极淡的蓝色光晕。",
+                        "colorVariant":  "FIDELITY",
+                        "overridePrimaryColor":  "#0052cc",
+                        "overrideSecondaryColor":  "#36b37e",
+                        "overrideTertiaryColor":  "#ffab00",
+                        "spacingScale":  2,
+                        "typography":  {
+                                           "body-md":  {
+                                                           "fontFamily":  "Inter, PingFang SC, Microsoft YaHei",
+                                                           "fontSize":  "14px",
+                                                           "fontWeight":  "400",
+                                                           "lineHeight":  "22px"
+                                                       },
+                                           "body-sm":  {
+                                                           "fontFamily":  "Inter, PingFang SC, Microsoft YaHei",
+                                                           "fontSize":  "13px",
+                                                           "fontWeight":  "400",
+                                                           "lineHeight":  "20px"
+                                                       },
+                                           "data-mono":  {
+                                                             "fontFamily":  "JetBrains Mono, Inter",
+                                                             "fontSize":  "14px",
+                                                             "fontWeight":  "500",
+                                                             "lineHeight":  "20px"
+                                                         },
+                                           "display-lg":  {
+                                                              "fontFamily":  "Inter, PingFang SC, Microsoft YaHei",
+                                                              "fontSize":  "30px",
+                                                              "fontWeight":  "600",
+                                                              "lineHeight":  "38px"
+                                                          },
+                                           "headline-md":  {
+                                                               "fontFamily":  "Inter, PingFang SC, Microsoft YaHei",
+                                                               "fontSize":  "24px",
+                                                               "fontWeight":  "600",
+                                                               "lineHeight":  "32px"
+                                                           },
+                                           "label-caps":  {
+                                                              "fontFamily":  "Inter, PingFang SC, Microsoft YaHei",
+                                                              "fontSize":  "12px",
+                                                              "fontWeight":  "700",
+                                                              "lineHeight":  "16px",
+                                                              "letterSpacing":  "0.05em"
+                                                          },
+                                           "title-sm":  {
+                                                            "fontFamily":  "Inter, PingFang SC, Microsoft YaHei",
+                                                            "fontSize":  "18px",
+                                                            "fontWeight":  "600",
+                                                            "lineHeight":  "26px"
+                                                        }
+                                       },
+                        "spacing":  {
+                                        "base-unit":  "4px",
+                                        "column-gutter":  "16px",
+                                        "container-margin":  "24px",
+                                        "lg":  "24px",
+                                        "md":  "16px",
+                                        "sm":  "8px",
+                                        "xl":  "32px",
+                                        "xs":  "4px"
+                                    },
+                        "headlineFontFamily":  "Inter",
+                        "bodyFontFamily":  "Inter",
+                        "labelFontFamily":  "Inter"
+                    },
+    "screenInstances":  [
+                            {
+                                "id":  "237c9f680e044792a68056f2acbb965a",
+                                "sourceScreen":  "projects/4624671007192108229/screens/237c9f680e044792a68056f2acbb965a",
+                                "x":  3712,
+                                "width":  1280,
+                                "height":  1024
+                            },
+                            {
+                                "id":  "280ef1619f1b4f87acdf8e722b10fe2c",
+                                "sourceScreen":  "projects/4624671007192108229/screens/280ef1619f1b4f87acdf8e722b10fe2c",
+                                "x":  1024,
+                                "width":  1280,
+                                "height":  1024
+                            },
+                            {
+                                "id":  "3838d63c44fe40058444d9e206411492",
+                                "sourceScreen":  "projects/4624671007192108229/screens/3838d63c44fe40058444d9e206411492",
+                                "x":  5056,
+                                "width":  1280,
+                                "height":  1024
+                            },
+                            {
+                                "id":  "42d0e7107d8849b7a0f3a93b1c44f7fd",
+                                "sourceScreen":  "projects/4624671007192108229/screens/42d0e7107d8849b7a0f3a93b1c44f7fd",
+                                "x":  6400,
+                                "width":  1280,
+                                "height":  1024
+                            },
+                            {
+                                "id":  "608d254fbe8e409db9cd44d93a962223",
+                                "sourceScreen":  "projects/4624671007192108229/screens/608d254fbe8e409db9cd44d93a962223",
+                                "x":  2368,
+                                "width":  1280,
+                                "height":  1024
+                            },
+                            {
+                                "id":  "assets_32e42db178c34d11a89c71d5e6a1c238",
+                                "width":  960,
+                                "height":  540,
+                                "sourceAsset":  "assets/32e42db178c34d11a89c71d5e6a1c238",
+                                "type":  "DESIGN_SYSTEM_INSTANCE"
+                            }
+                        ],
+    "metadata":  {
+                     "userRole":  "OWNER"
+                 }
+}

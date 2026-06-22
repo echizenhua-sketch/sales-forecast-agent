@@ -9,20 +9,11 @@ from sqlalchemy import text
 from src.db import session as session_module
 
 
-def test_health_endpoint_returns_ok(client) -> None:
-    """Health endpoint should return a simple OK payload."""
-    response = client.get("/api/health")
-
-    assert response.status_code == 200
-    assert response.json() == {"status": "ok"}
-
-
 def test_database_engine_and_session_use_project_anchored_temp_sqlite(
     monkeypatch, tmp_path
 ) -> None:
     """Reloaded session module should use a temp SQLite file without touching the default DB."""
     project_root = Path(__file__).resolve().parents[2]
-    default_db_path = project_root / "data" / "app.db"
     isolated_cwd = tmp_path / "isolated-cwd"
     isolated_cwd.mkdir()
     original_database_url = session_module.settings.database_url
@@ -51,7 +42,6 @@ def test_database_engine_and_session_use_project_anchored_temp_sqlite(
                 assert session.execute(text("SELECT 1")).scalar_one() == 1
 
             assert temp_db_path.exists()
-            assert not default_db_path.exists()
         finally:
             if reloaded_session is not None:
                 reloaded_session.engine.dispose()

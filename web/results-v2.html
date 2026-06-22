@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html class="light" lang="zh-CN">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>数据汇总 - 产销预测智能工作台</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet"/>
+    <script id="tailwind-config">
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#003d9b",
+              "primary-container": "#0052cc",
+              "on-primary": "#ffffff",
+              "on-primary-container": "#c4d2ff",
+              "background": "#faf8ff",
+              "surface": "#faf8ff",
+              "surface-container": "#ededf8",
+              "surface-container-low": "#f3f3fd",
+              "surface-container-lowest": "#ffffff",
+              "on-surface": "#191b23",
+              "on-surface-variant": "#434654",
+              "outline": "#737685",
+              "outline-variant": "#c3c6d6",
+              "error": "#ba1a1a",
+              "on-error": "#ffffff",
+            }
+          }
+        }
+      }
+    </script>
+    <style>
+        body { font-family: "Inter", "PingFang SC", "Microsoft YaHei", sans-serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+    </style>
+</head>
+<body class="overflow-hidden bg-background">
+<!-- SideNavBar -->
+<aside class="fixed left-0 top-0 h-full z-40 w-[240px] flex flex-col bg-surface-container-lowest border-r border-outline-variant">
+    <div class="p-6 flex items-center gap-2">
+        <div class="w-8 h-8 bg-primary rounded flex items-center justify-center">
+            <span class="material-symbols-outlined text-on-primary">insights</span>
+        </div>
+        <div>
+            <h1 class="text-xl font-bold text-primary">产销预测 Agent</h1>
+            <p class="text-xs text-on-surface-variant opacity-70">Enterprise Intelligence</p>
+        </div>
+    </div>
+    <nav class="flex-1 px-2 mt-4">
+        <a class="flex items-center gap-4 px-4 py-2 mb-1 rounded text-on-surface-variant hover:bg-surface-container" href="dashboard-v2.html">
+            <span class="material-symbols-outlined">dashboard</span>
+            <span>工作台</span>
+        </a>
+        <a class="flex items-center gap-4 px-4 py-2 mb-1 rounded bg-primary-container text-on-primary-container font-bold border-r-4 border-primary" href="results-v2.html">
+            <span class="material-symbols-outlined">dataset</span>
+            <span>数据汇总</span>
+        </a>
+        <a class="flex items-center gap-4 px-4 py-2 mb-1 rounded text-on-surface-variant hover:bg-surface-container" href="assistant-v2.html">
+            <span class="material-symbols-outlined">smart_toy</span>
+            <span>智能助手</span>
+        </a>
+        <a class="flex items-center gap-4 px-4 py-2 mb-1 rounded text-on-surface-variant hover:bg-surface-container" href="logs-v2.html">
+            <span class="material-symbols-outlined">history</span>
+            <span>操作日志</span>
+        </a>
+    </nav>
+    <div class="p-6 border-t border-outline-variant flex items-center gap-3">
+        <div class="w-10 h-10 rounded-full bg-primary text-on-primary flex items-center justify-center font-bold">
+            A
+        </div>
+        <div class="flex-1 min-w-0">
+            <p class="font-bold text-on-surface truncate" id="userName">管理员</p>
+            <p class="text-sm text-on-surface-variant truncate">v2.3.0 Pro</p>
+        </div>
+    </div>
+</aside>
+
+<!-- TopNavBar -->
+<header class="fixed top-0 right-0 left-[240px] z-30 h-16 px-6 flex justify-between items-center bg-surface border-b border-outline-variant">
+    <div class="flex items-center gap-6 flex-1">
+        <div class="relative w-full max-w-md">
+            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">search</span>
+            <input id="globalSearch" class="w-full pl-10 pr-4 py-2 bg-surface-container-low border border-outline-variant rounded-lg focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary" placeholder="搜索SKU或任务..." type="text" onkeypress="handleSearchKey(event)"/>
+        </div>
+    </div>
+    <div class="flex items-center gap-4">
+        <button class="p-2 rounded-full text-on-surface-variant hover:text-primary" onclick="showNotifications()">
+            <span class="material-symbols-outlined">notifications</span>
+        </button>
+        <button class="p-2 rounded-full text-on-surface-variant hover:text-primary" onclick="location.href='settings-v2.html'">
+            <span class="material-symbols-outlined">settings</span>
+        </button>
+        <div class="h-6 w-[1px] bg-outline-variant mx-2"></div>
+        <button class="px-6 py-2 bg-primary text-on-primary rounded hover:opacity-90" onclick="logout()">退出登录</button>
+    </div>
+</header>
+
+<!-- Main Content -->
+<main class="ml-[240px] mt-16 h-[calc(100vh-64px)] overflow-y-auto bg-background">
+    <section class="p-6">
+        <div class="max-w-7xl mx-auto space-y-6">
+            <!-- Page Header -->
+            <div class="flex items-center justify-between mb-6">
+                <div>
+                    <h2 class="text-2xl font-bold text-on-surface">数据汇总</h2>
+                    <p class="text-on-surface-variant mt-1" id="taskInfo">查看产销预测分析结果</p>
+                </div>
+                <div class="flex gap-3">
+                    <button class="flex items-center gap-2 px-4 py-2 border border-outline-variant rounded-lg text-on-surface hover:bg-surface-container" onclick="exportExcel()">
+                        <span class="material-symbols-outlined">download</span>
+                        导出Excel
+                    </button>
+                    <button class="flex items-center gap-2 px-4 py-2 bg-primary text-on-primary rounded-lg hover:opacity-90" onclick="location.href='dashboard-v2.html'">
+                        <span class="material-symbols-outlined">upload_file</span>
+                        上传新文件
+                    </button>
+                </div>
+            </div>
+
+            <!-- Summary Cards -->
+            <div class="grid grid-cols-5 gap-4">
+                <div class="bg-surface-container-lowest border border-outline-variant rounded-lg p-6">
+                    <p class="text-sm text-on-surface-variant mb-2">总供应</p>
+                    <p class="text-3xl font-bold text-on-surface" id="totalSupply">--</p>
+                </div>
+                <div class="bg-surface-container-lowest border border-outline-variant rounded-lg p-6">
+                    <p class="text-sm text-on-surface-variant mb-2">合计SAR</p>
+                    <p class="text-3xl font-bold text-on-surface" id="totalSar">--</p>
+                </div>
+                <div class="bg-surface-container-lowest border border-outline-variant rounded-lg p-6">
+                    <p class="text-sm text-on-surface-variant mb-2">SAR差异</p>
+                    <p class="text-3xl font-bold" id="totalGap">--</p>
+                </div>
+                <div class="bg-surface-container-lowest border border-outline-variant rounded-lg p-6">
+                    <p class="text-sm text-on-surface-variant mb-2">满足率</p>
+                    <p class="text-3xl font-bold text-on-surface" id="serviceLevel">--</p>
+                </div>
+                <div class="bg-surface-container-lowest border border-outline-variant rounded-lg p-6">
+                    <p class="text-sm text-on-surface-variant mb-2">目标满足率</p>
+                    <p class="text-3xl font-bold text-on-surface" id="targetLevel">98%</p>
+                </div>
+            </div>
+
+            <!-- Risk Stats -->
+            <div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-6">
+                <h3 class="text-lg font-semibold text-on-surface mb-4">风险统计</h3>
+                <div class="grid grid-cols-3 gap-4">
+                    <div class="p-4 bg-red-50 border border-red-200 rounded-lg">
+                        <p class="text-sm text-red-600 mb-1">极高风险 (CRITICAL)</p>
+                        <p class="text-2xl font-bold text-red-700" id="criticalCount">0</p>
+                    </div>
+                    <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+                        <p class="text-sm text-yellow-700 mb-1">高风险 (HIGH)</p>
+                        <p class="text-2xl font-bold text-yellow-800" id="highCount">0</p>
+                    </div>
+                    <div class="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                        <p class="text-sm text-blue-600 mb-1">中风险 (MEDIUM)</p>
+                        <p class="text-2xl font-bold text-blue-700" id="mediumCount">0</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SKU Details Table -->
+            <div class="bg-surface-container-lowest border border-outline-variant rounded-xl">
+                <div class="p-6 border-b border-outline-variant flex items-center justify-between">
+                    <h3 class="text-lg font-semibold text-on-surface">SKU明细</h3>
+                    <div class="flex gap-3">
+                        <select id="riskFilter" class="px-4 py-2 border border-outline-variant rounded-lg text-sm" onchange="loadSkuDetails()">
+                            <option value="">全部风险等级</option>
+                            <option value="CRITICAL">极高风险</option>
+                            <option value="HIGH">高风险</option>
+                            <option value="MEDIUM">中风险</option>
+                            <option value="NORMAL">正常</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead class="bg-surface-container border-b-2 border-outline-variant">
+                            <tr>
+                                <th class="px-4 py-3 text-left text-sm font-semibold text-on-surface">SKU编码</th>
+                                <th class="px-4 py-3 text-left text-sm font-semibold text-on-surface">产品名称</th>
+                                <th class="px-4 py-3 text-right text-sm font-semibold text-on-surface">总供应</th>
+                                <th class="px-4 py-3 text-right text-sm font-semibold text-on-surface">合计SAR</th>
+                                <th class="px-4 py-3 text-right text-sm font-semibold text-on-surface">缺口</th>
+                                <th class="px-4 py-3 text-right text-sm font-semibold text-on-surface">满足率</th>
+                                <th class="px-4 py-3 text-left text-sm font-semibold text-on-surface">风险等级</th>
+                            </tr>
+                        </thead>
+                        <tbody id="skuTableBody">
+                            <tr>
+                                <td colspan="7" class="px-4 py-8 text-center text-on-surface-variant">
+                                    加载中...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="p-4 border-t border-outline-variant flex items-center justify-between">
+                    <p class="text-sm text-on-surface-variant">
+                        共 <span id="totalCount">0</span> 条数据
+                    </p>
+                    <div class="flex gap-2" id="pagination"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<script>
+const API_BASE = 'http://localhost:8000';
+let currentUser = null;
+let currentTaskId = null;
+let currentPage = 1;
+const pageSize = 50;
+
+function authHeaders(extra = {}) {
+    const token = localStorage.getItem('accessToken');
+    return token ? { ...extra, Authorization: `Bearer ${token}` } : extra;
+}
+
+window.onload = async () => {
+    const userStr = localStorage.getItem('user');
+    if (!userStr) {
+        window.location.href = 'login-v2.html';
+        return;
+    }
+    currentUser = JSON.parse(userStr);
+    document.getElementById('userName').textContent = currentUser.real_name || currentUser.username;
+
+        const params = new URLSearchParams(window.location.search);
+        const q = params.get('q');
+        if (q) document.getElementById('globalSearch').value = q;
+        await loadLatestTask();
+};
+
+async function loadLatestTask() {
+    try {
+        const response = await fetch(`${API_BASE}/api/tasks`, { headers: authHeaders() });
+        const tasks = await response.json();
+
+        if (tasks.length === 0) {
+            document.getElementById('taskInfo').textContent = '暂无数据，请先上传文件';
+            return;
+        }
+
+        const params = new URLSearchParams(window.location.search);
+        const requestedTaskId = params.get('taskId');
+        const latestTask = requestedTaskId ? tasks.find(task => String(task.id) === requestedTaskId) || tasks[0] : tasks[0];
+        currentTaskId = latestTask.id;
+        document.getElementById('taskInfo').textContent = `任务：${latestTask.file_name}`;
+
+        // 加载数据
+        await loadSummary();
+        await loadSkuDetails();
+    } catch (error) {
+        console.error('加载任务失败:', error);
+        document.getElementById('taskInfo').textContent = '加载失败，请刷新重试';
+    }
+}
+
+async function loadSummary() {
+    try {
+        const response = await fetch(`${API_BASE}/api/tasks/${currentTaskId}/summary`, { headers: authHeaders() });
+        const summary = await response.json();
+
+        document.getElementById('totalSupply').textContent = formatNumber(summary.total_supply);
+        document.getElementById('totalSar').textContent = formatNumber(summary.total_sar);
+
+        const gap = summary.total_gap;
+        const gapEl = document.getElementById('totalGap');
+        gapEl.textContent = (gap >= 0 ? '+' : '') + formatNumber(gap);
+        gapEl.className = gap >= 0 ? 'text-3xl font-bold text-green-600' : 'text-3xl font-bold text-red-600';
+
+        document.getElementById('serviceLevel').textContent = summary.service_level.toFixed(1) + '%';
+        document.getElementById('targetLevel').textContent = summary.target_service_level.toFixed(0) + '%';
+
+        document.getElementById('criticalCount').textContent = summary.critical_risk_count;
+        document.getElementById('highCount').textContent = summary.high_risk_count;
+        document.getElementById('mediumCount').textContent = summary.medium_risk_count;
+    } catch (error) {
+        console.error('加载汇总数据失败:', error);
+    }
+}
+
+async function loadSkuDetails() {
+    const riskLevel = document.getElementById('riskFilter').value;
+    const params = new URLSearchParams({
+        page: currentPage,
+        page_size: pageSize
+    });
+    if (riskLevel) params.append('risk_level', riskLevel);
+
+    try {
+        const response = await fetch(`${API_BASE}/api/tasks/${currentTaskId}/sku-details?${params}`, { headers: authHeaders() });
+        const data = await response.json();
+
+        const tbody = document.getElementById('skuTableBody');
+        if (data.items.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="7" class="px-4 py-8 text-center text-on-surface-variant">暂无数据</td></tr>';
+            return;
+        }
+
+        tbody.innerHTML = data.items.map(item => {
+            const gap = item.gap || 0;
+            const gapClass = gap >= 0 ? 'text-green-600' : 'text-red-600';
+            const riskColor = getRiskColor(item.risk_level);
+
+            return `
+                <tr class="border-b border-outline-variant hover:bg-surface-container">
+                    <td class="px-4 py-3 text-sm font-medium text-on-surface">${item.sku_code}</td>
+                    <td class="px-4 py-3 text-sm text-on-surface">${item.product_name || '-'}</td>
+                    <td class="px-4 py-3 text-sm text-right text-on-surface">${formatNumber(item.total_supply)}</td>
+                    <td class="px-4 py-3 text-sm text-right text-on-surface">${formatNumber(item.sar_total)}</td>
+                    <td class="px-4 py-3 text-sm text-right font-medium ${gapClass}">${(gap >= 0 ? '+' : '') + formatNumber(gap)}</td>
+                    <td class="px-4 py-3 text-sm text-right text-on-surface">${(item.service_level || 0).toFixed(1)}%</td>
+                    <td class="px-4 py-3">
+                        <span class="inline-block px-3 py-1 text-xs font-semibold rounded-full ${riskColor}">
+                            ${item.risk_level}
+                        </span>
+                    </td>
+                </tr>
+            `;
+        }).join('');
+
+        document.getElementById('totalCount').textContent = data.total;
+    } catch (error) {
+        console.error('加载SKU明细失败:', error);
+    }
+}
+
+function getRiskColor(level) {
+    const colors = {
+        'CRITICAL': 'bg-red-100 text-red-700',
+        'HIGH': 'bg-yellow-100 text-yellow-700',
+        'MEDIUM': 'bg-blue-100 text-blue-700',
+        'NORMAL': 'bg-green-100 text-green-700',
+        'SUFFICIENT': 'bg-gray-100 text-gray-700',
+    };
+    return colors[level] || 'bg-gray-100 text-gray-700';
+}
+
+function formatNumber(num) {
+    return Math.round(num).toLocaleString('zh-CN');
+}
+
+function logout() {
+    if (confirm('确定要退出登录吗？')) {
+        localStorage.removeItem('user');
+        localStorage.removeItem('accessToken');
+        window.location.href = 'login-v2.html';
+    }
+}
+
+async function exportExcel() {
+    if (!currentTaskId) {
+        alert('暂无可导出的任务');
+        return;
+    }
+    const response = await fetch(`${API_BASE}/api/tasks/${currentTaskId}/export?export_type=SKU_DETAIL&export_format=XLSX`, {
+        method: 'POST',
+        headers: authHeaders()
+    });
+    if (!response.ok) {
+        const text = await response.text();
+        alert(`导出失败：${text}`);
+        return;
+    }
+    const blob = await response.blob();
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `产销预测汇总_task${currentTaskId}.xlsx`;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(url);
+}
+
+async function showNotifications() {
+    const response = await fetch(`${API_BASE}/api/notifications`, { headers: authHeaders() });
+    const data = await response.json();
+    alert((data.items || []).map(item => `${item.title}: ${item.message}`).join('\n'));
+}
+
+function handleSearchKey(event) {
+    if (event.key === 'Enter') {
+        const q = event.target.value.trim();
+        if (q) window.location.href = `results-v2.html?q=${encodeURIComponent(q)}`;
+    }
+}
+
+</script>
+</body>
+</html>

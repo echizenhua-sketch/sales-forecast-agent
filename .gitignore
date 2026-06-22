@@ -24,6 +24,14 @@ wheels/
 *.egg
 MANIFEST
 
+# Node / frontend generated files
+node_modules/
+web/node_modules/
+web/dist/
+web/test-results/
+web/playwright-report/
+*.tsbuildinfo
+
 # 虚拟环境
 venv/
 env/
@@ -47,3 +55,12 @@ Thumbs.db
 # 临时文件
 *.tmp
 temp/
+
+# 本地运行数据与验收截图
+data/
+test-results/
+test.db
+web-login.png
+web-workbench.png
+web-workbench-fixed.png
+*.bak

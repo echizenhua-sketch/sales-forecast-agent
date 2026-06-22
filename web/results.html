@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>汇总结果 - 产销预测智能工作台</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif;
+            background: #f5f7fa;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: white;
+            padding: 16px 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .back-btn {
+            padding: 8px 16px;
+            background: #f5f5f5;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .back-btn:hover {
+            background: #e0e0e0;
+        }
+
+        .header h1 {
+            font-size: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+
+        .summary-section {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .summary-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 20px;
+        }
+
+        .summary-item {
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .summary-label {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+
+        .summary-value {
+            font-size: 28px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .summary-value.positive {
+            color: #28a745;
+        }
+
+        .summary-value.negative {
+            color: #dc3545;
+        }
+
+        .toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .filter-group {
+            display: flex;
+            gap: 12px;
+        }
+
+        .filter-select {
+            padding: 8px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .export-btn {
+            padding: 8px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .export-btn:hover {
+            opacity: 0.9;
+        }
+
+        .table-container {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+            font-size: 14px;
+        }
+
+        th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #333;
+            position: sticky;
+            top: 0;
+        }
+
+        tr:hover {
+            background: #f8f9fa;
+        }
+
+        .risk-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .risk-CRITICAL {
+            background: #fee;
+            color: #c33;
+        }
+
+        .risk-HIGH {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .risk-MEDIUM {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .risk-NORMAL {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 60px;
+            color: #667eea;
+            font-size: 16px;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 20px;
+        }
+
+        .page-btn {
+            padding: 8px 16px;
+            border: 1px solid #e0e0e0;
+            background: white;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .page-btn:hover {
+            background: #f0f0f0;
+        }
+
+        .page-btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .page-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-left">
+            <button class="back-btn" onclick="history.back()">← 返回</button>
+            <h1>产销预测 Agent - 汇总结果</h1>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- 汇总指标 -->
+        <div class="summary-section">
+            <h2 class="summary-title">核心指标</h2>
+            <div class="summary-grid">
+                <div class="summary-item">
+                    <div class="summary-label">总供应 (Supply)</div>
+                    <div class="summary-value" id="totalSupply">--</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-label">合计SAR (Demand)</div>
+                    <div class="summary-value" id="totalSar">--</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-label">SAR差异 (Gap)</div>
+                    <div class="summary-value" id="totalGap">--</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-label">满足率 (Service Level)</div>
+                    <div class="summary-value" id="serviceLevel">--</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-label">目标设定</div>
+                    <div class="summary-value" id="targetLevel">98%</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 风险统计 -->
+        <div class="summary-section">
+            <h2 class="summary-title">风险统计</h2>
+            <div class="summary-grid" style="grid-template-columns: repeat(3, 1fr);">
+                <div class="summary-item">
+                    <div class="summary-label">极高风险 (CRITICAL)</div>
+                    <div class="summary-value negative" id="criticalCount">0</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-label">高风险 (HIGH)</div>
+                    <div class="summary-value" style="color: #ff9800;" id="highCount">0</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-label">中风险 (MEDIUM)</div>
+                    <div class="summary-value" style="color: #2196f3;" id="mediumCount">0</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SKU 明细表 -->
+        <div class="table-container">
+            <div class="toolbar">
+                <div class="filter-group">
+                    <select class="filter-select" id="riskFilter" onchange="loadSkuDetails()">
+                        <option value="">全部风险等级</option>
+                        <option value="CRITICAL">极高风险</option>
+                        <option value="HIGH">高风险</option>
+                        <option value="MEDIUM">中风险</option>
+                        <option value="NORMAL">正常</option>
+                    </select>
+                    <button class="export-btn" onclick="openVirtualScroll()" style="background: #2196f3;">虚拟滚动模式</button>
+                </div>
+                <div class="filter-group">
+                    <button class="export-btn" onclick="exportExcel()">导出 Excel</button>
+                    <button class="export-btn" onclick="exportCsv()">导出 CSV</button>
+                </div>
+            </div>
+
+            <div id="tableContent">
+                <div class="loading">加载中...</div>
+            </div>
+
+            <div class="pagination" id="pagination"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:8000';
+        const urlParams = new URLSearchParams(window.location.search);
+        const taskId = urlParams.get('taskId');
+        let currentPage = 1;
+        const pageSize = 50;
+
+        window.onload = async () => {
+            if (!taskId) {
+                alert('缺少任务ID');
+                window.location.href = 'dashboard.html';
+                return;
+            }
+
+            await loadSummary();
+            await loadSkuDetails();
+        };
+
+        async function loadSummary() {
+            try {
+                const response = await fetch(`${API_BASE}/api/tasks/${taskId}/summary`);
+                const summary = await response.json();
+
+                document.getElementById('totalSupply').textContent = formatNumber(summary.total_supply);
+                document.getElementById('totalSar').textContent = formatNumber(summary.total_sar);
+
+                const gap = summary.total_gap;
+                const gapElement = document.getElementById('totalGap');
+                gapElement.textContent = (gap >= 0 ? '+' : '') + formatNumber(gap);
+                gapElement.className = 'summary-value ' + (gap >= 0 ? 'positive' : 'negative');
+
+                document.getElementById('serviceLevel').textContent = summary.service_level.toFixed(1) + '%';
+                document.getElementById('targetLevel').textContent = summary.target_service_level.toFixed(1) + '%';
+
+                document.getElementById('criticalCount').textContent = summary.critical_risk_count;
+                document.getElementById('highCount').textContent = summary.high_risk_count;
+                document.getElementById('mediumCount').textContent = summary.medium_risk_count;
+            } catch (error) {
+                console.error('加载汇总数据失败:', error);
+            }
+        }
+
+        async function loadSkuDetails() {
+            const riskFilter = document.getElementById('riskFilter').value;
+            const tableContent = document.getElementById('tableContent');
+
+            tableContent.innerHTML = '<div class="loading">加载中...</div>';
+
+            try {
+                let url = `${API_BASE}/api/tasks/${taskId}/sku-details?page=${currentPage}&page_size=${pageSize}`;
+                if (riskFilter) {
+                    url += `&risk_level=${riskFilter}`;
+                }
+
+                const response = await fetch(url);
+                const data = await response.json();
+
+                if (data.items.length === 0) {
+                    tableContent.innerHTML = '<div class="loading">暂无数据</div>';
+                    return;
+                }
+
+                let tableHtml = `
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>SKU编码</th>
+                                <th>产品名称</th>
+                                <th>总供应</th>
+                                <th>合计SAR</th>
+                                <th>缺口</th>
+                                <th>满足率</th>
+                                <th>风险等级</th>
+                                <th>风险评分</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+
+                data.items.forEach(item => {
+                    const gap = item.gap || 0;
+                    const gapClass = gap >= 0 ? 'positive' : 'negative';
+
+                    tableHtml += `
+                        <tr>
+                            <td>${item.sku_code}</td>
+                            <td>${item.product_name || '-'}</td>
+                            <td>${formatNumber(item.total_supply)}</td>
+                            <td>${formatNumber(item.sar_total)}</td>
+                            <td class="${gapClass}">${(gap >= 0 ? '+' : '') + formatNumber(gap)}</td>
+                            <td>${(item.service_level || 0).toFixed(1)}%</td>
+                            <td><span class="risk-badge risk-${item.risk_level}">${item.risk_level}</span></td>
+                            <td>${(item.risk_score || 0).toFixed(1)}</td>
+                        </tr>
+                    `;
+                });
+
+                tableHtml += '</tbody></table>';
+                tableContent.innerHTML = tableHtml;
+
+                // 渲染分页
+                renderPagination(data.total, data.page, data.page_size);
+            } catch (error) {
+                console.error('加载SKU明细失败:', error);
+                tableContent.innerHTML = '<div class="loading">加载失败</div>';
+            }
+        }
+
+        function renderPagination(total, page, pageSize) {
+            const totalPages = Math.ceil(total / pageSize);
+            const pagination = document.getElementById('pagination');
+
+            if (totalPages <= 1) {
+                pagination.innerHTML = '';
+                return;
+            }
+
+            let html = `
+                <button class="page-btn" onclick="changePage(${page - 1})" ${page <= 1 ? 'disabled' : ''}>上一页</button>
+                <button class="page-btn">${page} / ${totalPages}</button>
+                <button class="page-btn" onclick="changePage(${page + 1})" ${page >= totalPages ? 'disabled' : ''}>下一页</button>
+            `;
+
+            pagination.innerHTML = html;
+        }
+
+        function changePage(page) {
+            currentPage = page;
+            loadSkuDetails();
+        }
+
+        async function exportExcel() {
+            try {
+                const response = await fetch(`${API_BASE}/api/tasks/${taskId}/export?export_type=SKU_DETAIL&export_format=XLSX`, {
+                    method: 'POST'
+                });
+
+                if (response.ok) {
+                    const blob = await response.blob();
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `export_${taskId}_${Date.now()}.xlsx`;
+                    a.click();
+                } else {
+                    alert('导出失败');
+                }
+            } catch (error) {
+                console.error('导出失败:', error);
+                alert('导出失败：' + error.message);
+            }
+        }
+
+        async function exportCsv() {
+            try {
+                const response = await fetch(`${API_BASE}/api/tasks/${taskId}/export?export_type=SKU_DETAIL&export_format=CSV`, {
+                    method: 'POST'
+                });
+
+                if (response.ok) {
+                    const blob = await response.blob();
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `export_${taskId}_${Date.now()}.csv`;
+                    a.click();
+                } else {
+                    alert('导出失败');
+                }
+            } catch (error) {
+                console.error('导出失败:', error);
+                alert('导出失败：' + error.message);
+            }
+        }
+
+        function formatNumber(num) {
+            return Math.round(num).toLocaleString('zh-CN');
+        }
+    </script>
+</body>
+</html>
+
+        function openVirtualScroll() {
+            window.open(`sku-virtual.html?taskId=${taskId}`, '_blank');
+        }
+    </script>
+</body>
+</html>

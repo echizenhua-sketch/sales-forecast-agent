@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>产销预测 Agent - 登录</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter,+PingFang+SC,+Microsoft+YaHei:wght@100..900&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-surface": "#191b23",
+                        "background": "#faf8ff",
+                        "primary": "#003d9b",
+                        "on-background": "#191b23",
+                        "secondary-fixed": "#82f9be",
+                        "surface-bright": "#faf8ff",
+                        "surface-variant": "#e1e2ec",
+                        "secondary": "#006c47",
+                        "surface-dim": "#d9d9e4",
+                        "surface-container": "#ededf8",
+                        "primary-fixed": "#dae2ff",
+                        "on-primary-container": "#c4d2ff",
+                        "surface-tint": "#0c56d0",
+                        "on-secondary-fixed": "#002113",
+                        "on-tertiary-fixed-variant": "#624000",
+                        "primary-fixed-dim": "#b2c5ff",
+                        "on-error-container": "#93000a",
+                        "surface-container-high": "#e7e7f2",
+                        "on-secondary": "#ffffff",
+                        "on-tertiary": "#ffffff",
+                        "tertiary-fixed": "#ffddb3",
+                        "on-tertiary-fixed": "#291800",
+                        "tertiary": "#5e3c00",
+                        "primary-container": "#0052cc",
+                        "outline-variant": "#c3c6d6",
+                        "tertiary-container": "#7d5200",
+                        "secondary-fixed-dim": "#65dca4",
+                        "outline": "#737685",
+                        "error-container": "#ffdad6",
+                        "inverse-primary": "#b2c5ff",
+                        "inverse-on-surface": "#f0f0fb",
+                        "inverse-surface": "#2e3038",
+                        "on-surface-variant": "#434654",
+                        "on-tertiary-container": "#ffca81",
+                        "surface-container-lowest": "#ffffff",
+                        "on-error": "#ffffff",
+                        "on-primary-fixed-variant": "#0040a2",
+                        "on-primary-fixed": "#001848",
+                        "tertiary-fixed-dim": "#ffb950",
+                        "on-secondary-container": "#00734c",
+                        "error": "#ba1a1a",
+                        "on-secondary-fixed-variant": "#005235",
+                        "secondary-container": "#82f9be",
+                        "surface-container-highest": "#e1e2ec",
+                        "surface-container-low": "#f3f3fd",
+                        "surface": "#faf8ff",
+                        "on-primary": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "base-unit": "4px",
+                        "container-margin": "24px",
+                        "column-gutter": "16px",
+                        "md": "16px",
+                        "sm": "8px",
+                        "lg": "24px",
+                        "xs": "4px",
+                        "xl": "32px"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Inter, PingFang SC, Microsoft YaHei"],
+                        "body-sm": ["Inter, PingFang SC, Microsoft YaHei"],
+                        "display-lg": ["Inter, PingFang SC, Microsoft YaHei"],
+                        "label-caps": ["Inter, PingFang SC, Microsoft YaHei"],
+                        "title-sm": ["Inter, PingFang SC, Microsoft YaHei"],
+                        "headline-md": ["Inter, PingFang SC, Microsoft YaHei"],
+                        "data-mono": ["JetBrains Mono, Inter"]
+                    },
+                    "fontSize": {
+                        "body-md": ["14px", {"lineHeight": "22px", "fontWeight": "400"}],
+                        "body-sm": ["13px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "display-lg": ["30px", {"lineHeight": "38px", "fontWeight": "600"}],
+                        "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700"}],
+                        "title-sm": ["18px", {"lineHeight": "26px", "fontWeight": "600"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "data-mono": ["14px", {"lineHeight": "20px", "fontWeight": "500"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            background-color: #F4F5F7;
+            background-image: 
+                radial-gradient(circle at 2px 2px, rgba(0, 61, 155, 0.05) 1px, transparent 0);
+            background-size: 32px 32px;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .login-card {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            border: 1px solid #DFE1E6;
+        }
+        .error-shake {
+            animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both;
+        }
+        @keyframes shake {
+            10%, 90% { transform: translate3d(-1px, 0, 0); }
+            20%, 80% { transform: translate3d(2px, 0, 0); }
+            30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+            40%, 60% { transform: translate3d(4px, 0, 0); }
+        }
+    </style>
+</head>
+<body class="font-body-md text-on-surface flex items-center justify-center min-h-screen p-container-margin">
+<div class="w-full max-w-[420px] space-y-lg">
+<!-- Logo & Header Section -->
+<div class="text-center space-y-xs">
+<div class="inline-flex items-center justify-center w-12 h-12 rounded-lg bg-primary text-white mb-md">
+<span class="material-symbols-outlined text-[28px]" data-icon="insights">insights</span>
+</div>
+<h1 class="font-headline-md text-headline-md text-primary tracking-tight">产销预测 Agent</h1>
+<p class="font-body-md text-on-surface-variant">企业级产销智能决策工作台</p>
+</div>
+<!-- Login Card -->
+<div class="login-card bg-surface-container-lowest p-xl rounded-xl" id="loginCard">
+<!-- Secondary State: Login Failed Alert (Hidden by default) -->
+<div class="hidden mb-lg flex items-center gap-sm p-md rounded bg-error-container text-on-error-container border border-error/20" id="errorAlert">
+<span class="material-symbols-outlined text-[20px]" data-icon="error">error</span>
+<span class="font-body-sm">账号或密码错误，请重试</span>
+</div>
+<form class="space-y-lg" id="loginForm">
+<!-- Username -->
+<div class="space-y-xs">
+<label class="font-label-caps text-label-caps text-on-surface-variant block" for="username">账号</label>
+<div class="relative">
+<span class="absolute left-md top-1/2 -translate-y-1/2 material-symbols-outlined text-outline text-[20px]" data-icon="person">person</span>
+<input class="w-full pl-11 pr-md py-md border border-outline-variant rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all font-body-md placeholder:text-outline/60" id="username" name="username" placeholder="请输入账号" required="" type="text"/>
+</div>
+</div>
+<!-- Password -->
+<div class="space-y-xs">
+<div class="flex justify-between items-center">
+<label class="font-label-caps text-label-caps text-on-surface-variant" for="password">密码</label>
+<a class="text-xs text-primary hover:underline transition-all" href="#">忘记密码？</a>
+</div>
+<div class="relative">
+<span class="absolute left-md top-1/2 -translate-y-1/2 material-symbols-outlined text-outline text-[20px]" data-icon="lock">lock</span>
+<input class="w-full pl-11 pr-md py-md border border-outline-variant rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all font-body-md placeholder:text-outline/60" id="password" name="password" placeholder="请输入指定登录密码" required="" type="password"/>
+<button class="absolute right-md top-1/2 -translate-y-1/2 text-outline hover:text-primary transition-colors" onclick="togglePassword()" type="button">
+<span class="material-symbols-outlined text-[20px]" data-icon="visibility" id="passwordIcon">visibility</span>
+</button>
+</div>
+</div>
+<!-- Remember Me & Policy -->
+<div class="flex items-center gap-sm pt-xs">
+<input class="w-4 h-4 rounded border-outline-variant text-primary focus:ring-primary" id="remember" type="checkbox"/>
+<label class="font-body-sm text-on-surface-variant cursor-pointer" for="remember">记住账号</label>
+</div>
+<!-- Submit Button -->
+<button class="w-full bg-primary hover:bg-primary-container text-on-primary py-md rounded-lg font-title-sm text-title-sm transition-all active:scale-[0.98] flex items-center justify-center gap-sm group" id="loginBtn" type="submit">
+<span>登录</span>
+<span class="material-symbols-outlined text-[18px] group-hover:translate-x-1 transition-transform" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</form>
+<div class="mt-xl pt-lg border-t border-outline-variant flex flex-col items-center gap-md">
+<span class="text-xs text-outline font-label-caps">其他登录方式</span>
+<div class="flex gap-lg">
+<button class="w-10 h-10 rounded-full border border-outline-variant flex items-center justify-center hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="fingerprint">fingerprint</span>
+</button>
+<button class="w-10 h-10 rounded-full border border-outline-variant flex items-center justify-center hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="qr_code_2">qr_code_2</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Footer -->
+<footer class="text-center space-y-xs pt-xl">
+<p class="text-xs text-outline">© 2024 智链科技. All rights reserved.</p>
+<div class="flex justify-center gap-md text-xs text-outline">
+<a class="hover:text-primary transition-colors" href="#">服务协议</a>
+<span class="text-outline-variant">|</span>
+<a class="hover:text-primary transition-colors" href="#">隐私权政策</a>
+<span class="text-outline-variant">|</span>
+<a class="hover:text-primary transition-colors" href="#">帮助中心</a>
+</div>
+</footer>
+</div>
+<!-- Background Decoration Image -->
+<div class="fixed bottom-0 left-0 w-full opacity-[0.03] pointer-events-none overflow-hidden h-[409px]">
+<div class="w-full h-full bg-repeat-x" style="background-image: url('https://www.transparenttextures.com/patterns/cubes.png');"></div>
+</div>
+<script>
+        const loginForm = document.getElementById('loginForm');
+        const loginBtn = document.getElementById('loginBtn');
+        const errorAlert = document.getElementById('errorAlert');
+        const loginCard = document.getElementById('loginCard');
+
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            // Show loading state
+            const originalBtnContent = loginBtn.innerHTML;
+            loginBtn.disabled = true;
+            loginBtn.innerHTML = `
+                <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                <span>正在验证...</span>
+            `;
+
+            // Simulate API Request and show failure (as per prompt request for secondary state)
+            setTimeout(() => {
+                loginBtn.disabled = false;
+                loginBtn.innerHTML = originalBtnContent;
+                
+                // Show Error Alert
+                errorAlert.classList.remove('hidden');
+                loginCard.classList.add('error-shake');
+                
+                // Remove shake class after animation
+                setTimeout(() => {
+                    loginCard.classList.remove('error-shake');
+                }, 500);
+            }, 1500);
+        });
+
+        function togglePassword() {
+            const pwdInput = document.getElementById('password');
+            const pwdIcon = document.getElementById('passwordIcon');
+            if (pwdInput.type === 'password') {
+                pwdInput.type = 'text';
+                pwdIcon.innerText = 'visibility_off';
+            } else {
+                pwdInput.type = 'password';
+                pwdIcon.innerText = 'visibility';
+            }
+        }
+    </script>
+</body></html>

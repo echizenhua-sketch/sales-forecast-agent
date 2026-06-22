@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+
+<html class="light" lang="zh-CN"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500&amp;family=Inter:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-surface": "#191b23",
+                        "background": "#faf8ff",
+                        "primary": "#003d9b",
+                        "on-background": "#191b23",
+                        "secondary-fixed": "#82f9be",
+                        "surface-bright": "#faf8ff",
+                        "surface-variant": "#e1e2ec",
+                        "secondary": "#006c47",
+                        "surface-dim": "#d9d9e4",
+                        "surface-container": "#ededf8",
+                        "primary-fixed": "#dae2ff",
+                        "on-primary-container": "#c4d2ff",
+                        "surface-tint": "#0c56d0",
+                        "on-secondary-fixed": "#002113",
+                        "on-tertiary-fixed-variant": "#624000",
+                        "primary-fixed-dim": "#b2c5ff",
+                        "on-error-container": "#93000a",
+                        "surface-container-high": "#e7e7f2",
+                        "on-secondary": "#ffffff",
+                        "on-tertiary": "#ffffff",
+                        "tertiary-fixed": "#ffddb3",
+                        "on-tertiary-fixed": "#291800",
+                        "tertiary": "#5e3c00",
+                        "primary-container": "#0052cc",
+                        "outline-variant": "#c3c6d6",
+                        "tertiary-container": "#7d5200",
+                        "secondary-fixed-dim": "#65dca4",
+                        "outline": "#737685",
+                        "error-container": "#ffdad6",
+                        "inverse-primary": "#b2c5ff",
+                        "inverse-on-surface": "#f0f0fb",
+                        "inverse-surface": "#2e3038",
+                        "on-surface-variant": "#434654",
+                        "on-tertiary-container": "#ffca81",
+                        "surface-container-lowest": "#ffffff",
+                        "on-error": "#ffffff",
+                        "on-primary-fixed-variant": "#0040a2",
+                        "on-primary-fixed": "#001848",
+                        "tertiary-fixed-dim": "#ffb950",
+                        "on-secondary-container": "#00734c",
+                        "error": "#ba1a1a",
+                        "on-secondary-fixed-variant": "#005235",
+                        "secondary-container": "#82f9be",
+                        "surface-container-highest": "#e1e2ec",
+                        "surface-container-low": "#f3f3fd",
+                        "surface": "#faf8ff",
+                        "on-primary": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "base-unit": "4px",
+                        "container-margin": "24px",
+                        "column-gutter": "16px",
+                        "md": "16px",
+                        "sm": "8px",
+                        "lg": "24px",
+                        "xs": "4px",
+                        "xl": "32px"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Inter, PingFang SC, Microsoft YaHei"],
+                        "body-sm": ["Inter, PingFang SC, Microsoft YaHei"],
+                        "display-lg": ["Inter, PingFang SC, Microsoft YaHei"],
+                        "label-caps": ["Inter, PingFang SC, Microsoft YaHei"],
+                        "title-sm": ["Inter, PingFang SC, Microsoft YaHei"],
+                        "headline-md": ["Inter, PingFang SC, Microsoft YaHei"],
+                        "data-mono": ["JetBrains Mono, Inter"]
+                    },
+                    "fontSize": {
+                        "body-md": ["14px", {"lineHeight": "22px", "fontWeight": "400"}],
+                        "body-sm": ["13px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "display-lg": ["30px", {"lineHeight": "38px", "fontWeight": "600"}],
+                        "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700"}],
+                        "title-sm": ["18px", {"lineHeight": "26px", "fontWeight": "600"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "data-mono": ["14px", {"lineHeight": "20px", "fontWeight": "500"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            background-color: #f4f5f7;
+            font-family: 'Inter', 'PingFang SC', sans-serif;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .scroll-hide::-webkit-scrollbar {
+            display: none;
+        }
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 16px;
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(8px);
+            border: 1px solid #dfe1e6;
+        }
+    </style>
+</head>
+<body class="text-on-surface">
+<!-- SideNavBar -->
+<aside class="fixed left-0 top-0 h-full z-40 w-[240px] flex flex-col border-r border-outline-variant bg-surface-container-lowest dark:bg-on-surface">
+<div class="p-lg">
+<h1 class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed">产销预测 Agent</h1>
+<p class="font-body-md text-body-md text-on-surface-variant opacity-70">Enterprise Intelligence</p>
+</div>
+<nav class="flex-1 px-sm space-y-xs">
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200 font-body-md text-body-md" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span>工作台</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200 font-body-md text-body-md" href="#">
+<span class="material-symbols-outlined" data-icon="dataset">dataset</span>
+<span>数据汇总</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded-lg bg-primary-container text-on-primary-container font-bold border-r-4 border-primary font-body-md text-body-md" href="#">
+<span class="material-symbols-outlined" data-icon="smart_toy">smart_toy</span>
+<span>智能对话</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200 font-body-md text-body-md" href="#">
+<span class="material-symbols-outlined" data-icon="history">history</span>
+<span>操作日志</span>
+</a>
+</nav>
+<div class="p-lg border-t border-outline-variant">
+<div class="flex items-center gap-md">
+<img alt="User Avatar" class="w-10 h-10 rounded-full bg-surface-container" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDP0TiVovmBvgoHRNHzKRzFmNndisSnK6UVKwMPyt0og7coYq_qr2Mrub6tMdGRHuCSeMRekW63j9NbRaoAXzGzPQzplZLVuC381n7zPxm_xBySLuZRy_md_pjYke4du6B6AXl5226yK_B6EBMgsrKydkXyrD7vzAnrHLZQQhGvnhkxv_REHBtGijJ_PUbuefi-u94IPjYl1SSYgMUGDtMgy84s_a36yTp_2cu8_h4qBUZDN5acF3AcaVOliogI4OIGLHReaXysP_4"/>
+<div>
+<p class="font-body-md font-bold">陈计划</p>
+<p class="text-xs text-on-surface-variant">高级供应链专家</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- TopNavBar -->
+<header class="fixed top-0 right-0 left-[240px] z-30 h-16 bg-surface dark:bg-on-surface border-b border-outline-variant px-lg flex justify-between items-center">
+<div class="flex items-center gap-xl w-1/2">
+<div class="relative w-full max-w-md">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline" data-icon="search">search</span>
+<input class="w-full pl-10 pr-4 py-2 bg-surface-container-low border border-outline-variant rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent font-body-md" placeholder="搜索预测模型、产品或指令..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-md">
+<button class="p-2 text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+</button>
+<div class="h-6 w-[1px] bg-outline-variant mx-2"></div>
+<button class="px-md py-2 text-on-surface-variant font-title-sm text-sm hover:text-primary transition-colors">陈计划</button>
+<button class="bg-primary text-on-primary px-lg py-2 rounded-lg font-title-sm text-sm active:opacity-90 transition-opacity">退出登录</button>
+</div>
+</header>
+<!-- Main Content Area -->
+<main class="ml-[240px] pt-16 h-screen flex">
+<!-- Left: Analysis Canvas -->
+<div class="flex-1 p-lg overflow-y-auto scroll-hide">
+<div class="mb-lg">
+<h2 class="font-headline-md text-headline-md text-on-surface mb-xs">5 月度供应缺口分析汇总</h2>
+<p class="text-on-surface-variant font-body-md">实时同步 SAP 与 WMS 数据，当前模型：SAR 需求预测引擎 v4.2</p>
+</div>
+<!-- KPI Cards -->
+<div class="grid grid-cols-4 gap-md mb-lg">
+<div class="bg-surface-container-lowest border border-outline-variant p-md rounded-lg">
+<p class="text-xs font-label-caps text-outline uppercase tracking-wider mb-sm">总预测需求 (SAR)</p>
+<div class="flex items-baseline gap-sm">
+<span class="text-2xl font-bold font-data-mono">142,805</span>
+<span class="text-xs text-secondary flex items-center font-bold">
+<span class="material-symbols-outlined text-sm" data-icon="arrow_upward">arrow_upward</span> 12%
+                        </span>
+</div>
+</div>
+<div class="bg-surface-container-lowest border border-outline-variant p-md rounded-lg">
+<p class="text-xs font-label-caps text-outline uppercase tracking-wider mb-sm">确认供应总量</p>
+<div class="flex items-baseline gap-sm">
+<span class="text-2xl font-bold font-data-mono">118,440</span>
+</div>
+</div>
+<div class="bg-surface-container-lowest border border-outline-variant p-md rounded-lg border-l-4 border-error">
+<p class="text-xs font-label-caps text-error uppercase tracking-wider mb-sm">总缺口 (Gap)</p>
+<div class="flex items-baseline gap-sm">
+<span class="text-2xl font-bold font-data-mono text-error">-24,365</span>
+</div>
+</div>
+<div class="bg-surface-container-lowest border border-outline-variant p-md rounded-lg">
+<p class="text-xs font-label-caps text-outline uppercase tracking-wider mb-sm">库存周转天数</p>
+<div class="flex items-baseline gap-sm">
+<span class="text-2xl font-bold font-data-mono">18.5</span>
+<span class="text-xs text-error flex items-center font-bold">
+<span class="material-symbols-outlined text-sm" data-icon="arrow_downward">arrow_downward</span> 4d
+                        </span>
+</div>
+</div>
+</div>
+<!-- Main Data Table -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-lg overflow-hidden">
+<div class="p-md bg-surface-container-low border-b border-outline-variant flex justify-between items-center">
+<h3 class="font-bold text-sm">库存风险明细清单</h3>
+<div class="flex gap-sm">
+<button class="text-xs font-bold border border-outline-variant px-sm py-1 rounded hover:bg-surface-container-high">导出报表</button>
+<button class="text-xs font-bold bg-primary text-on-primary px-sm py-1 rounded">筛选异常项</button>
+</div>
+</div>
+<table class="w-full text-left font-body-sm border-collapse">
+<thead class="bg-surface-container-low text-on-surface-variant font-bold border-b border-outline-variant">
+<tr>
+<th class="px-md py-3">产品名称</th>
+<th class="px-md py-3 text-right">SKU</th>
+<th class="px-md py-3 text-right">SAR 需求</th>
+<th class="px-md py-3 text-right">总供应</th>
+<th class="px-md py-3 text-right">缺口</th>
+<th class="px-md py-3 text-center">状态</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant">
+<tr class="hover:bg-surface-container transition-colors bg-error-container/10">
+<td class="px-md py-3 font-bold">无线耳机 B</td>
+<td class="px-md py-3 text-right font-data-mono">SKU-002</td>
+<td class="px-md py-3 text-right">36,936</td>
+<td class="px-md py-3 text-right">6,039</td>
+<td class="px-md py-3 text-right font-bold text-error">-30,897</td>
+<td class="px-md py-3 text-center">
+<span class="bg-error-container text-on-error-container px-2 py-1 rounded-full text-[10px] font-bold">极高风险</span>
+</td>
+</tr>
+<tr class="hover:bg-surface-container transition-colors">
+<td class="px-md py-3">智能手表 G3</td>
+<td class="px-md py-3 text-right font-data-mono">SKU-015</td>
+<td class="px-md py-3 text-right">12,400</td>
+<td class="px-md py-3 text-right">10,500</td>
+<td class="px-md py-3 text-right text-error">-1,900</td>
+<td class="px-md py-3 text-center">
+<span class="bg-surface-container text-on-surface-variant px-2 py-1 rounded-full text-[10px] font-bold">中风险</span>
+</td>
+</tr>
+<tr class="hover:bg-surface-container transition-colors">
+<td class="px-md py-3">平板电脑 Pro</td>
+<td class="px-md py-3 text-right font-data-mono">SKU-088</td>
+<td class="px-md py-3 text-right">8,200</td>
+<td class="px-md py-3 text-right">9,000</td>
+<td class="px-md py-3 text-right text-secondary">+800</td>
+<td class="px-md py-3 text-center">
+<span class="bg-secondary-container text-on-secondary-container px-2 py-1 rounded-full text-[10px] font-bold">充足</span>
+</td>
+</tr>
+<tr class="hover:bg-surface-container transition-colors">
+<td class="px-md py-3">核心基站 A</td>
+<td class="px-md py-3 text-right font-data-mono">SKU-102</td>
+<td class="px-md py-3 text-right">24,500</td>
+<td class="px-md py-3 text-right">25,000</td>
+<td class="px-md py-3 text-right text-secondary">+500</td>
+<td class="px-md py-3 text-center">
+<span class="bg-secondary-container text-on-secondary-container px-2 py-1 rounded-full text-[10px] font-bold">充足</span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Animated Asset Placeholder -->
+<div class="mt-lg rounded-xl overflow-hidden glass-panel border border-outline-variant h-64 relative flex items-center justify-center">
+
+<div class="relative z-10 text-center">
+<p class="font-bold text-primary mb-2">需求热力动态分布</p>
+<p class="text-xs text-on-surface-variant">基于实时地理位置的需求波动模型</p>
+</div>
+</div>
+</div>
+<!-- Right: Agent Dialogue Sidebar (Expanded) -->
+<aside class="w-[420px] bg-surface-container-lowest border-l border-outline-variant flex flex-col">
+<div class="p-md border-b border-outline-variant flex items-center justify-between">
+<div class="flex items-center gap-sm">
+<div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-on-primary">
+<span class="material-symbols-outlined text-base" data-icon="smart_toy">smart_toy</span>
+</div>
+<div>
+<p class="text-sm font-bold">智能辅助助手</p>
+<p class="text-[10px] text-secondary font-bold">● 在线分析中</p>
+</div>
+</div>
+<button class="p-1 hover:bg-surface-container rounded-lg">
+<span class="material-symbols-outlined text-xl" data-icon="close">close</span>
+</button>
+</div>
+<div class="flex-1 overflow-y-auto p-md space-y-lg scroll-hide" id="chat-container">
+<!-- User Question 1 -->
+<div class="flex flex-col items-end">
+<div class="max-w-[85%] bg-surface-container-high px-md py-sm rounded-xl rounded-tr-none">
+<p class="font-body-md text-on-surface">哪些产品本月缺货风险最高？</p>
+</div>
+<p class="text-[10px] text-outline mt-1">10:24 AM</p>
+</div>
+<!-- Agent Answer 1 -->
+<div class="flex flex-col items-start">
+<div class="max-w-[90%] bg-primary/5 border border-primary/10 px-md py-sm rounded-xl rounded-tl-none">
+<p class="font-body-md text-on-surface leading-relaxed">
+                            基于最新的汇总结果，<span class="font-bold text-error">无线耳机 B (SKU-002)</span> 缺货风险最高。其 5 月总供应为 <span class="font-data-mono font-bold">6,039</span>，但合计 <span class="underline decoration-dashed">SAR 需求</span> 高达 <span class="font-data-mono font-bold">36,936</span>，缺口达 <span class="text-error font-bold">-30,897</span>。
+                        </p>
+<div class="mt-sm pt-sm border-t border-outline-variant flex flex-col gap-xs">
+<div class="flex items-center gap-xs text-[10px] text-primary font-bold">
+<span class="material-symbols-outlined text-sm" data-icon="link">link</span>
+                                数据引用
+                            </div>
+<div class="bg-white p-xs rounded border border-outline-variant text-[11px] flex justify-between items-center">
+<span>表: 库存风险明细清单 (Row 1)</span>
+<span class="material-symbols-outlined text-xs text-primary" data-icon="open_in_new">open_in_new</span>
+</div>
+</div>
+</div>
+<div class="flex gap-sm mt-2">
+<button class="text-[10px] px-2 py-1 rounded border border-outline-variant hover:bg-surface-container transition-colors">建议排产计划</button>
+<button class="text-[10px] px-2 py-1 rounded border border-outline-variant hover:bg-surface-container transition-colors">查看库存预警</button>
+</div>
+</div>
+<!-- User Question 2 -->
+<div class="flex flex-col items-end">
+<div class="max-w-[85%] bg-surface-container-high px-md py-sm rounded-xl rounded-tr-none">
+<p class="font-body-md text-on-surface">对比竞品明年的市场占有率预测？</p>
+</div>
+<p class="text-[10px] text-outline mt-1">10:26 AM</p>
+</div>
+<!-- Agent Answer 2 -->
+<div class="flex flex-col items-start">
+<div class="max-w-[90%] bg-surface-container-low border border-outline-variant px-md py-sm rounded-xl rounded-tl-none italic text-on-surface-variant">
+<p class="font-body-md leading-relaxed">
+<span class="material-symbols-outlined text-sm align-middle mr-1" data-icon="info">info</span>
+                            超出范围。当前系统仅支持基于上传数据的产销平衡分析，无法预测外部市场占有率。
+                        </p>
+</div>
+</div>
+</div>
+<!-- Chat Input -->
+<div class="p-md border-t border-outline-variant bg-surface">
+<div class="flex gap-sm mb-sm">
+<button class="p-1 rounded hover:bg-surface-container-high text-on-surface-variant">
+<span class="material-symbols-outlined text-xl" data-icon="attachment">attachment</span>
+</button>
+<button class="p-1 rounded hover:bg-surface-container-high text-on-surface-variant">
+<span class="material-symbols-outlined text-xl" data-icon="mic">mic</span>
+</button>
+<button class="p-1 rounded hover:bg-surface-container-high text-on-surface-variant">
+<span class="material-symbols-outlined text-xl" data-icon="history_edu">history_edu</span>
+</button>
+</div>
+<div class="relative">
+<textarea class="w-full h-24 p-md rounded-lg border border-outline-variant focus:ring-2 focus:ring-primary focus:border-transparent resize-none font-body-md" placeholder="询问关于缺口、SAR 预测或库存策略的问题..."></textarea>
+<button class="absolute bottom-md right-md bg-primary text-on-primary p-2 rounded-lg hover:scale-105 transition-transform">
+<span class="material-symbols-outlined" data-icon="send">send</span>
+</button>
+</div>
+<p class="text-[10px] text-outline mt-sm text-center">AI 建议仅供参考，请根据实际业务环境核实决策。</p>
+</div>
+</aside>
+</main>
+<script>
+        // Micro-interaction for table rows
+        document.querySelectorAll('tbody tr').forEach(row => {
+            row.addEventListener('click', () => {
+                row.classList.add('bg-primary-container/10');
+                setTimeout(() => row.classList.remove('bg-primary-container/10'), 600);
+            });
+        });
+
+        // Chat auto-scroll
+        const chatContainer = document.getElementById('chat-container');
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+
+        // Form placeholder logic
+        const textarea = document.querySelector('textarea');
+        textarea.addEventListener('focus', () => {
+            textarea.parentElement.classList.add('shadow-lg');
+        });
+        textarea.addEventListener('blur', () => {
+            textarea.parentElement.classList.remove('shadow-lg');
+        });
+    </script>
+</body></html>

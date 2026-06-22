@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html class="light" lang="zh-CN">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>登录 - 产销预测智能工作台</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet"/>
+    <script id="tailwind-config">
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#003d9b",
+              "primary-container": "#0052cc",
+              "on-primary": "#ffffff",
+              "background": "#faf8ff",
+              "surface": "#faf8ff",
+              "on-surface": "#191b23",
+              "on-surface-variant": "#434654",
+              "outline": "#737685",
+              "outline-variant": "#c3c6d6",
+            }
+          }
+        }
+      }
+    </script>
+    <style>
+        body { font-family: "Inter", "PingFang SC", "Microsoft YaHei", sans-serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+    </style>
+</head>
+<body class="bg-background min-h-screen flex items-center justify-center">
+    <div class="w-full max-w-md p-8">
+        <!-- Logo and Title -->
+        <div class="text-center mb-8">
+            <div class="inline-flex items-center justify-center w-16 h-16 bg-primary rounded-2xl mb-4">
+                <span class="material-symbols-outlined text-on-primary text-4xl">insights</span>
+            </div>
+            <h1 class="text-3xl font-bold text-primary mb-2">产销预测 Agent</h1>
+            <p class="text-on-surface-variant">Enterprise Intelligence Platform</p>
+        </div>
+
+        <!-- Login Card -->
+        <div class="bg-surface border border-outline-variant rounded-2xl p-8 shadow-lg">
+            <h2 class="text-xl font-semibold text-on-surface mb-6">登录您的账号</h2>
+
+            <!-- Error Message -->
+            <div id="errorMessage" class="hidden mb-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+                <p class="text-sm text-red-600"></p>
+            </div>
+
+            <!-- Login Form -->
+            <form id="loginForm" onsubmit="handleLogin(event)">
+                <!-- Username -->
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-on-surface mb-2" for="username">
+                        账号
+                    </label>
+                    <div class="relative">
+                        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">person</span>
+                        <input
+                            type="text"
+                            id="username"
+                            class="w-full pl-10 pr-4 py-3 border border-outline-variant rounded-lg focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
+                            placeholder="请输入账号"
+                            required
+                        />
+                    </div>
+                </div>
+
+                <!-- Password -->
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-on-surface mb-2" for="password">
+                        密码
+                    </label>
+                    <div class="relative">
+                        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">lock</span>
+                        <input
+                            type="password"
+                            id="password"
+                            class="w-full pl-10 pr-12 py-3 border border-outline-variant rounded-lg focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
+                            placeholder="请输入密码"
+                            required
+                        />
+                        <button type="button" onclick="togglePassword()" class="absolute right-3 top-1/2 -translate-y-1/2 text-outline hover:text-primary">
+                            <span class="material-symbols-outlined" id="toggleIcon">visibility_off</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Remember Me -->
+                <div class="flex items-center justify-between mb-6">
+                    <label class="flex items-center cursor-pointer">
+                        <input type="checkbox" id="rememberMe" class="w-4 h-4 text-primary border-outline-variant rounded focus:ring-primary">
+                        <span class="ml-2 text-sm text-on-surface-variant">记住账号</span>
+                    </label>
+                    <a href="#" class="text-sm text-primary hover:underline">忘记密码？</a>
+                </div>
+
+                <!-- Submit Button -->
+                <button
+                    type="submit"
+                    id="submitBtn"
+                    class="w-full py-3 bg-primary text-on-primary rounded-lg font-medium hover:opacity-90 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
+                >
+                    <span id="submitText">登录</span>
+                    <span id="submitLoading" class="hidden">
+                        <svg class="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                    </span>
+                </button>
+            </form>
+
+            <!-- Divider -->
+            <div class="relative my-6">
+                <div class="absolute inset-0 flex items-center">
+                    <div class="w-full border-t border-outline-variant"></div>
+                </div>
+                <div class="relative flex justify-center text-sm">
+                    <span class="px-2 bg-surface text-on-surface-variant">或</span>
+                </div>
+            </div>
+
+            <!-- Other Login Methods -->
+            <div class="grid grid-cols-2 gap-3">
+                <button class="flex items-center justify-center gap-2 py-3 border border-outline-variant rounded-lg hover:bg-surface text-on-surface-variant hover:border-primary transition-colors">
+                    <span class="material-symbols-outlined">badge</span>
+                    <span class="text-sm">企业认证</span>
+                </button>
+                <button class="flex items-center justify-center gap-2 py-3 border border-outline-variant rounded-lg hover:bg-surface text-on-surface-variant hover:border-primary transition-colors">
+                    <span class="material-symbols-outlined">smartphone</span>
+                    <span class="text-sm">手机验证</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="text-center mt-6">
+            <p class="text-sm text-on-surface-variant">
+                © 2026 产销预测智能工作台 v2.2.0
+            </p>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:8000';
+
+        // 页面加载时检查记住的账号
+        window.onload = () => {
+            const savedUsername = localStorage.getItem('savedUsername');
+            if (savedUsername) {
+                document.getElementById('username').value = savedUsername;
+                document.getElementById('rememberMe').checked = true;
+            }
+        };
+
+        // 切换密码可见性
+        function togglePassword() {
+            const passwordInput = document.getElementById('password');
+            const toggleIcon = document.getElementById('toggleIcon');
+
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleIcon.textContent = 'visibility';
+            } else {
+                passwordInput.type = 'password';
+                toggleIcon.textContent = 'visibility_off';
+            }
+        }
+
+        // 处理登录
+        async function handleLogin(event) {
+            event.preventDefault();
+
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const rememberMe = document.getElementById('rememberMe').checked;
+
+            const submitBtn = document.getElementById('submitBtn');
+            const submitText = document.getElementById('submitText');
+            const submitLoading = document.getElementById('submitLoading');
+            const errorMessage = document.getElementById('errorMessage');
+
+            // 禁用按钮，显示加载
+            submitBtn.disabled = true;
+            submitText.classList.add('hidden');
+            submitLoading.classList.remove('hidden');
+            errorMessage.classList.add('hidden');
+
+            try {
+                const response = await fetch(`${API_BASE}/api/auth/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ username, password })
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    // 保存用户信息
+                    localStorage.setItem('user', JSON.stringify(data.user));
+                    if (data.access_token) {
+                        localStorage.setItem('accessToken', data.access_token);
+                    }
+
+                    // 记住账号
+                    if (rememberMe) {
+                        localStorage.setItem('savedUsername', username);
+                    } else {
+                        localStorage.removeItem('savedUsername');
+                    }
+
+                    // 跳转到工作台
+                    window.location.href = 'dashboard-v2.html';
+                } else {
+                    showError('账号或密码错误，请重试');
+                }
+            } catch (error) {
+                console.error('登录错误:', error);
+                showError('网络错误，请检查后端服务是否启动');
+            } finally {
+                // 恢复按钮状态
+                submitBtn.disabled = false;
+                submitText.classList.remove('hidden');
+                submitLoading.classList.add('hidden');
+            }
+        }
+
+        function showError(message) {
+            const errorMessage = document.getElementById('errorMessage');
+            errorMessage.querySelector('p').textContent = message;
+            errorMessage.classList.remove('hidden');
+
+            // 3秒后自动隐藏
+            setTimeout(() => {
+                errorMessage.classList.add('hidden');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

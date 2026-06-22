@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+
+<html class="light" lang="zh-CN"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter,+PingFang+SC,+Microsoft+YaHei:wght@100..900&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-surface": "#191b23",
+                    "background": "#faf8ff",
+                    "primary": "#003d9b",
+                    "on-background": "#191b23",
+                    "secondary-fixed": "#82f9be",
+                    "surface-bright": "#faf8ff",
+                    "surface-variant": "#e1e2ec",
+                    "secondary": "#006c47",
+                    "surface-dim": "#d9d9e4",
+                    "surface-container": "#ededf8",
+                    "primary-fixed": "#dae2ff",
+                    "on-primary-container": "#c4d2ff",
+                    "surface-tint": "#0c56d0",
+                    "on-secondary-fixed": "#002113",
+                    "on-tertiary-fixed-variant": "#624000",
+                    "primary-fixed-dim": "#b2c5ff",
+                    "on-error-container": "#93000a",
+                    "surface-container-high": "#e7e7f2",
+                    "on-secondary": "#ffffff",
+                    "on-tertiary": "#ffffff",
+                    "tertiary-fixed": "#ffddb3",
+                    "on-tertiary-fixed": "#291800",
+                    "tertiary": "#5e3c00",
+                    "primary-container": "#0052cc",
+                    "outline-variant": "#c3c6d6",
+                    "tertiary-container": "#7d5200",
+                    "secondary-fixed-dim": "#65dca4",
+                    "outline": "#737685",
+                    "error-container": "#ffdad6",
+                    "inverse-primary": "#b2c5ff",
+                    "inverse-on-surface": "#f0f0fb",
+                    "inverse-surface": "#2e3038",
+                    "on-surface-variant": "#434654",
+                    "on-tertiary-container": "#ffca81",
+                    "surface-container-lowest": "#ffffff",
+                    "on-error": "#ffffff",
+                    "on-primary-fixed-variant": "#0040a2",
+                    "on-primary-fixed": "#001848",
+                    "tertiary-fixed-dim": "#ffb950",
+                    "on-secondary-container": "#00734c",
+                    "error": "#ba1a1a",
+                    "on-secondary-fixed-variant": "#005235",
+                    "secondary-container": "#82f9be",
+                    "surface-container-highest": "#e1e2ec",
+                    "surface-container-low": "#f3f3fd",
+                    "surface": "#faf8ff",
+                    "on-primary": "#ffffff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "base-unit": "4px",
+                    "container-margin": "24px",
+                    "column-gutter": "16px",
+                    "md": "16px",
+                    "sm": "8px",
+                    "lg": "24px",
+                    "xs": "4px",
+                    "xl": "32px"
+            },
+            "fontFamily": {
+                    "body-md": ["Inter, PingFang SC, Microsoft YaHei"],
+                    "body-sm": ["Inter, PingFang SC, Microsoft YaHei"],
+                    "display-lg": ["Inter, PingFang SC, Microsoft YaHei"],
+                    "label-caps": ["Inter, PingFang SC, Microsoft YaHei"],
+                    "title-sm": ["Inter, PingFang SC, Microsoft YaHei"],
+                    "headline-md": ["Inter, PingFang SC, Microsoft YaHei"],
+                    "data-mono": ["JetBrains Mono, Inter"]
+            },
+            "fontSize": {
+                    "body-md": ["14px", {"lineHeight": "22px", "fontWeight": "400"}],
+                    "body-sm": ["13px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "display-lg": ["30px", {"lineHeight": "38px", "fontWeight": "600"}],
+                    "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700"}],
+                    "title-sm": ["18px", {"lineHeight": "26px", "fontWeight": "600"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "data-mono": ["14px", {"lineHeight": "20px", "fontWeight": "500"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: "Inter", "PingFang SC", "Microsoft YaHei", sans-serif; background-color: #F4F5F7; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .sidebar-active { background-color: #0052cc; color: #ffffff; font-weight: 700; border-right: 4px solid #003d9b; }
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #DFE1E6; border-radius: 10px; }
+    </style>
+</head>
+<body class="overflow-hidden">
+<!-- SideNavBar -->
+<aside class="fixed left-0 top-0 h-full z-40 w-[240px] flex flex-col bg-surface-container-lowest border-r border-outline-variant">
+<div class="p-lg flex items-center gap-sm">
+<div class="w-8 h-8 bg-primary rounded flex items-center justify-center">
+<span class="material-symbols-outlined text-on-primary text-title-sm">insights</span>
+</div>
+<div>
+<h1 class="font-headline-md text-headline-md font-bold text-primary">产销预测 Agent</h1>
+<p class="font-body-sm text-body-sm text-on-surface-variant opacity-70">Enterprise Intelligence</p>
+</div>
+</div>
+<nav class="flex-1 px-sm mt-md">
+<a class="flex items-center gap-md px-md py-sm mb-xs rounded bg-primary-container text-on-primary-container font-bold border-r-4 border-primary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-body-md text-body-md">工作台</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm mb-xs rounded text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">dataset</span>
+<span class="font-body-md text-body-md">数据汇总</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm mb-xs rounded text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">smart_toy</span>
+<span class="font-body-md text-body-md">智能对话</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm mb-xs rounded text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">history</span>
+<span class="font-body-md text-body-md">操作日志</span>
+</a>
+</nav>
+<div class="p-lg border-t border-outline-variant flex items-center gap-md">
+<div class="w-10 h-10 rounded-full bg-surface-container-highest overflow-hidden">
+<img alt="User Avatar" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAd_0jiBbOg0jURueu0WqQNPHjS2wdpIOmMOVIWq-mNbixTJaH3rNvcV5lzc8Qx8_TFvD7zeno6phefKuct1uY1ubVew6bCewlXHT_1-qpma8u5780UmE4TGmK2lL89aeH0jGaoPEMoi3rMTtmF3vRpJPEqtYHGDwHA-fFl8MQX3xTL5jTuhm7KGRSX2HHSqrxbUJZWJvZ7gytF7h7s0C9a7mjVR-nV_raTrA3lKTUeFuqyDKoxAOONis61gB7k4JUttt_59EywN5s"/>
+</div>
+<div class="flex-1 min-w-0">
+<p class="font-body-md text-body-md font-bold text-on-surface truncate">管理员账号</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant truncate">v2.4.0 Professional</p>
+</div>
+</div>
+</aside>
+<!-- TopNavBar -->
+<header class="fixed top-0 right-0 left-[240px] z-30 h-16 px-lg flex justify-between items-center bg-surface border-b border-outline-variant">
+<div class="flex items-center gap-lg flex-1">
+<div class="relative w-full max-w-md">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">search</span>
+<input class="w-full pl-10 pr-4 py-2 bg-surface-container-low border border-outline-variant rounded-lg text-body-md focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all" placeholder="搜索预测结果或订单..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-md">
+<div class="flex items-center gap-sm">
+<button class="p-2 rounded-full text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="p-2 rounded-full text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">settings</span>
+</button>
+</div>
+<div class="h-6 w-[1px] bg-outline-variant mx-2"></div>
+<div class="flex items-center gap-sm">
+<button class="px-md py-2 text-on-surface-variant font-title-sm hover:text-primary transition-colors">陈计划</button>
+<button class="px-lg py-2 bg-primary text-on-primary rounded font-title-sm hover:opacity-90 active:scale-95 transition-all">退出登录</button>
+</div>
+</div>
+</header>
+<!-- Main Content Area -->
+<main class="ml-[240px] mt-16 h-[calc(100vh-64px)] flex overflow-hidden">
+<!-- Left: Workbench Content -->
+<section class="flex-1 p-lg overflow-y-auto bg-background">
+<div class="max-w-5xl mx-auto space-y-lg">
+<!-- Page Header -->
+<div class="mb-xl">
+<h2 class="font-headline-md text-headline-md text-on-surface font-bold">工作台</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mt-1">开始新的产销预测任务</p>
+</div>
+<!-- Upload Section -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-xl shadow-sm">
+<div class="flex items-center justify-between mb-lg">
+<h3 class="font-title-sm text-title-sm text-on-surface flex items-center gap-sm">
+<span class="w-6 h-6 rounded-full bg-primary text-on-primary flex items-center justify-center text-[12px]">1</span>
+                            第一步：上传产销预测及供应表
+                        </h3>
+<a class="text-primary text-body-sm hover:underline flex items-center gap-xs" href="#">
+<span class="material-symbols-outlined text-[16px]">download</span> 下载模版
+                        </a>
+</div>
+<!-- Upload Zone -->
+<div class="relative border-2 border-dashed border-outline-variant rounded-lg p-xl flex flex-col items-center justify-center bg-surface-container-low transition-all hover:bg-primary-container/5 hover:border-primary group cursor-pointer" id="drop-zone">
+<div class="w-16 h-16 bg-surface-container-high rounded-full flex items-center justify-center mb-md group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-primary text-[32px]">upload_file</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface mb-sm">将产销数据文件拖拽至此，或</p>
+<button class="px-xl py-md bg-primary text-on-primary rounded-lg font-bold hover:shadow-md active:scale-95 transition-all">
+                            点击上传 Excel 文件
+                        </button>
+<p class="font-body-sm text-body-sm text-outline mt-lg">支持 .xlsx, .xls, .csv 格式 (最大 20MB)</p>
+<!-- Drag & Drop Overlay (Hidden by default) -->
+<div class="absolute inset-0 bg-primary/10 rounded-lg flex items-center justify-center hidden" id="drop-overlay">
+<p class="text-primary font-bold text-headline-md">松开以上传文件</p>
+</div>
+</div>
+</div>
+<!-- Recent Activity Section (Empty State) -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl overflow-hidden shadow-sm">
+<div class="px-lg py-md border-b border-outline-variant flex justify-between items-center">
+<h3 class="font-title-sm text-title-sm text-on-surface font-bold">最近处理记录</h3>
+<button class="text-outline hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined text-[20px]">refresh</span>
+</button>
+</div>
+<div class="p-xl flex flex-col items-center justify-center min-h-[200px]">
+<img alt="No data" class="w-24 h-24 opacity-20 mb-md grayscale" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAfqHc_N4MftH9kGZg63Dp3vYGjptoWKzj2XXh7m2fBC2TMMXdx93T2VYedRj7tCovcWJT3CZZnWgT6CNa0JM_BhRsheR1RPCagI1lhvfNE7GPcOMxavlRaCOqQcjzoCKpMOPsDU-BPZHli-A_2qfl-mR6Dj8PyAsbPOjUZoDeMnq-yel1l4ET7zYd4fCa3UCp5s1OkyQS1ioclsy44rGqLphV9W7GZz3N7qklMoS_zWW0FcJCEy_GnbHUjB8zraAOAtbJnvrqfDY8"/>
+<p class="font-body-md text-body-md text-on-surface-variant">暂无处理记录，请先上传文件</p>
+</div>
+</div>
+<!-- KPI Placeholder (Empty) -->
+<div class="grid grid-cols-3 gap-md">
+<div class="bg-surface-container-lowest border border-outline-variant rounded-lg p-lg opacity-40">
+<p class="font-body-sm text-body-sm text-on-surface-variant">预测准确率</p>
+<p class="font-headline-md text-headline-md font-bold text-on-surface mt-sm">--</p>
+</div>
+<div class="bg-surface-container-lowest border border-outline-variant rounded-lg p-lg opacity-40">
+<p class="font-body-sm text-body-sm text-on-surface-variant">库存周转天数</p>
+<p class="font-headline-md text-headline-md font-bold text-on-surface mt-sm">--</p>
+</div>
+<div class="bg-surface-container-lowest border border-outline-variant rounded-lg p-lg opacity-40">
+<p class="font-body-sm text-body-sm text-on-surface-variant">待处理预警</p>
+<p class="font-headline-md text-headline-md font-bold text-on-surface mt-sm">--</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Right: AI Agent Chat Panel -->
+<aside class="w-[380px] bg-surface-container-lowest border-l border-outline-variant flex flex-col">
+<div class="p-lg border-b border-outline-variant flex items-center gap-md bg-surface">
+<div class="w-10 h-10 rounded-lg bg-primary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">smart_toy</span>
+</div>
+<div>
+<h3 class="font-title-sm text-title-sm font-bold text-on-surface">智能助手</h3>
+<div class="flex items-center gap-xs">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+<span class="text-[11px] text-secondary font-bold">在线</span>
+</div>
+</div>
+</div>
+<!-- Chat Content -->
+<div class="flex-1 overflow-y-auto p-lg space-y-lg custom-scrollbar">
+<!-- AI Message -->
+<div class="flex flex-col items-start gap-sm">
+<div class="bg-primary/5 text-on-surface border border-primary/10 rounded-xl rounded-tl-none p-md max-w-[90%]">
+<p class="font-body-md text-body-md">您好，我是产销预测助手。</p>
+<p class="font-body-md text-body-md mt-1">请上传文件后开始分析。我可以协助您：</p>
+<ul class="mt-sm space-y-xs">
+<li class="flex items-start gap-xs text-body-sm text-on-surface-variant">
+<span class="material-symbols-outlined text-[14px] mt-[3px] text-primary">check_circle</span>
+                                识别历史销售趋势
+                            </li>
+<li class="flex items-start gap-xs text-body-sm text-on-surface-variant">
+<span class="material-symbols-outlined text-[14px] mt-[3px] text-primary">check_circle</span>
+                                发现供应缺口风险
+                            </li>
+<li class="flex items-start gap-xs text-body-sm text-on-surface-variant">
+<span class="material-symbols-outlined text-[14px] mt-[3px] text-primary">check_circle</span>
+                                生成自动化补货建议
+                            </li>
+</ul>
+</div>
+<span class="text-[10px] text-outline ml-1">10:24 AM</span>
+</div>
+<!-- Prompt Suggestions -->
+<div class="pt-lg space-y-sm">
+<p class="text-label-caps text-label-caps text-outline">您可以问我</p>
+<button class="w-full text-left p-sm border border-outline-variant rounded hover:bg-surface-container-low transition-colors text-body-sm text-on-surface-variant flex justify-between items-center group">
+<span>如何优化库存准确度？</span>
+<span class="material-symbols-outlined text-[16px] opacity-0 group-hover:opacity-100 transition-opacity">arrow_forward</span>
+</button>
+<button class="w-full text-left p-sm border border-outline-variant rounded hover:bg-surface-container-low transition-colors text-body-sm text-on-surface-variant flex justify-between items-center group">
+<span>异常波动检测规则说明</span>
+<span class="material-symbols-outlined text-[16px] opacity-0 group-hover:opacity-100 transition-opacity">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- Chat Input (Disabled State) -->
+<div class="p-lg border-t border-outline-variant bg-surface">
+<div class="relative">
+<textarea class="w-full p-md pr-12 bg-surface-container-low border border-outline-variant rounded-lg text-body-md resize-none h-24 opacity-60 cursor-not-allowed focus:outline-none" disabled="" placeholder="上传文件后可进行智能问答..."></textarea>
+<button class="absolute bottom-3 right-3 w-8 h-8 rounded-full bg-outline-variant text-on-primary flex items-center justify-center cursor-not-allowed" disabled="">
+<span class="material-symbols-outlined text-[20px]">send</span>
+</button>
+</div>
+<div class="flex gap-sm mt-md">
+<button class="p-2 rounded bg-surface-container-high text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[20px]">attach_file</span>
+</button>
+<button class="p-2 rounded bg-surface-container-high text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[20px]">mic</span>
+</button>
+</div>
+</div>
+</aside>
+</main>
+<script>
+        // Micro-interactions for Drag and Drop
+        const dropZone = document.getElementById('drop-zone');
+        const dropOverlay = document.getElementById('drop-overlay');
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropZone.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                dropOverlay.classList.remove('hidden');
+            }, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                dropOverlay.classList.add('hidden');
+            }, false);
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            console.log('Files dropped:', files);
+            alert('文件上传功能演示：已接收 ' + files.length + ' 个文件。在实际应用中，此处将触发文件解析流程。');
+        });
+
+        // Simple scale interaction for buttons
+        document.querySelectorAll('button').forEach(btn => {
+            btn.addEventListener('mousedown', () => btn.classList.add('scale-95'));
+            btn.addEventListener('mouseup', () => btn.classList.remove('scale-95'));
+            btn.addEventListener('mouseleave', () => btn.classList.remove('scale-95'));
+        });
+    </script>
+</body></html>

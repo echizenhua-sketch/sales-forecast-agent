@@ -1,8 +1,5 @@
-"""Shared SQLAlchemy declarative base."""
+"""Database metadata placeholder for future ORM models."""
 
-from sqlalchemy.orm import DeclarativeBase
+from sqlalchemy import MetaData
 
-
-class Base(DeclarativeBase):
-    """Base class for all ORM models."""
-
+metadata = MetaData()

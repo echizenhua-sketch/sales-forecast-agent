@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>产销预测 Agent - 文件处理</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter,+PingFang+SC,+Microsoft+YaHei:wght@100..900&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                "on-surface": "#191b23",
+                "background": "#faf8ff",
+                "primary": "#003d9b",
+                "on-background": "#191b23",
+                "secondary-fixed": "#82f9be",
+                "surface-bright": "#faf8ff",
+                "surface-variant": "#e1e2ec",
+                "secondary": "#006c47",
+                "surface-dim": "#d9d9e4",
+                "surface-container": "#ededf8",
+                "primary-fixed": "#dae2ff",
+                "on-primary-container": "#c4d2ff",
+                "surface-tint": "#0c56d0",
+                "on-secondary-fixed": "#002113",
+                "on-tertiary-fixed-variant": "#624000",
+                "primary-fixed-dim": "#b2c5ff",
+                "on-error-container": "#93000a",
+                "surface-container-high": "#e7e7f2",
+                "on-secondary": "#ffffff",
+                "on-tertiary": "#ffffff",
+                "tertiary-fixed": "#ffddb3",
+                "on-tertiary-fixed": "#291800",
+                "tertiary": "#5e3c00",
+                "primary-container": "#0052cc",
+                "outline-variant": "#c3c6d6",
+                "tertiary-container": "#7d5200",
+                "secondary-fixed-dim": "#65dca4",
+                "outline": "#737685",
+                "error-container": "#ffdad6",
+                "inverse-primary": "#b2c5ff",
+                "inverse-on-surface": "#f0f0fb",
+                "inverse-surface": "#2e3038",
+                "on-surface-variant": "#434654",
+                "on-tertiary-container": "#ffca81",
+                "surface-container-lowest": "#ffffff",
+                "on-error": "#ffffff",
+                "on-primary-fixed-variant": "#0040a2",
+                "on-primary-fixed": "#001848",
+                "tertiary-fixed-dim": "#ffb950",
+                "on-secondary-container": "#00734c",
+                "error": "#ba1a1a",
+                "on-secondary-fixed-variant": "#005235",
+                "secondary-container": "#82f9be",
+                "surface-container-highest": "#e1e2ec",
+                "surface-container-low": "#f3f3fd",
+                "surface": "#faf8ff",
+                "on-primary": "#ffffff"
+            },
+            "borderRadius": {
+                "DEFAULT": "0.125rem",
+                "lg": "0.25rem",
+                "xl": "0.5rem",
+                "full": "0.75rem"
+            },
+            "spacing": {
+                "base-unit": "4px",
+                "container-margin": "24px",
+                "column-gutter": "16px",
+                "md": "16px",
+                "sm": "8px",
+                "lg": "24px",
+                "xs": "4px",
+                "xl": "32px"
+            },
+            "fontFamily": {
+                "body-md": ["Inter, PingFang SC, Microsoft YaHei"],
+                "body-sm": ["Inter, PingFang SC, Microsoft YaHei"],
+                "display-lg": ["Inter, PingFang SC, Microsoft YaHei"],
+                "label-caps": ["Inter, PingFang SC, Microsoft YaHei"],
+                "title-sm": ["Inter, PingFang SC, Microsoft YaHei"],
+                "headline-md": ["Inter, PingFang SC, Microsoft YaHei"],
+                "data-mono": ["JetBrains Mono, Inter"]
+            },
+            "fontSize": {
+                "body-md": ["14px", {"lineHeight": "22px", "fontWeight": "400"}],
+                "body-sm": ["13px", {"lineHeight": "20px", "fontWeight": "400"}],
+                "display-lg": ["30px", {"lineHeight": "38px", "fontWeight": "600"}],
+                "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700"}],
+                "title-sm": ["18px", {"lineHeight": "26px", "fontWeight": "600"}],
+                "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                "data-mono": ["14px", {"lineHeight": "20px", "fontWeight": "500"}]
+            }
+          }
+        }
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .step-line::after {
+            content: '';
+            position: absolute;
+            top: 12px;
+            left: 24px;
+            width: calc(100% - 32px);
+            height: 2px;
+            background-color: #DFE1E6;
+            z-index: 0;
+        }
+        .shimmer {
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+        }
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+    </style>
+</head>
+<body class="bg-surface font-body-md text-on-surface antialiased">
+<!-- Sidebar (Shared Component SideNavBar) -->
+<aside class="fixed left-0 top-0 h-full z-40 w-[240px] flex flex-col border-r border-outline-variant bg-surface-container-lowest">
+<div class="p-lg">
+<h1 class="font-headline-md text-headline-md font-bold text-primary">产销预测 Agent</h1>
+<p class="text-on-surface-variant opacity-70 text-xs mt-1 uppercase tracking-wider">Enterprise Intelligence</p>
+</div>
+<nav class="flex-1 px-sm">
+<div class="space-y-1">
+<a class="flex items-center gap-3 px-md py-3 bg-primary-container text-on-primary-container font-bold border-r-4 border-primary rounded-sm" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span>工作台</span>
+</a>
+<a class="flex items-center gap-3 px-md py-3 text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="dataset">dataset</span>
+<span>数据汇总</span>
+</a>
+<a class="flex items-center gap-3 px-md py-3 text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="smart_toy">smart_toy</span>
+<span>智能对话</span>
+</a>
+<a class="flex items-center gap-3 px-md py-3 text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="history">history</span>
+<span>操作日志</span>
+</a>
+</div>
+</nav>
+<div class="p-md border-t border-outline-variant">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-primary-fixed flex items-center justify-center text-primary font-bold">陈</div>
+<div class="overflow-hidden">
+<p class="text-body-sm font-bold truncate">陈计划</p>
+<p class="text-xs text-on-surface-variant truncate">供应链专家</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- Header (Shared Component TopNavBar) -->
+<header class="fixed top-0 right-0 left-[240px] z-30 h-16 bg-surface border-b border-outline-variant px-lg flex justify-between items-center">
+<div class="flex items-center gap-4">
+<div class="relative">
+<span class="absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant material-symbols-outlined text-sm">search</span>
+<input class="pl-10 pr-4 py-1.5 bg-surface-container-low border border-outline-variant rounded-lg text-body-sm focus:ring-2 focus:ring-primary focus:border-transparent outline-none w-64" placeholder="搜索报表、指令..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-lg">
+<div class="flex items-center gap-4">
+<button class="text-on-surface-variant hover:text-primary transition-colors"><span class="material-symbols-outlined">notifications</span></button>
+<button class="text-on-surface-variant hover:text-primary transition-colors"><span class="material-symbols-outlined">settings</span></button>
+</div>
+<div class="h-6 w-px bg-outline-variant"></div>
+<button class="text-body-sm font-bold text-on-surface-variant hover:text-primary transition-colors">退出登录</button>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="ml-[240px] pt-16 min-h-screen">
+<div class="p-lg max-w-5xl mx-auto space-y-lg">
+<!-- Breadcrumb & Title -->
+<div class="flex justify-between items-end">
+<div>
+<nav class="flex text-xs text-on-surface-variant mb-2 gap-2">
+<span>工作台</span> <span>/</span> <span>预测任务创建</span>
+</nav>
+<h2 class="font-headline-md text-headline-md text-on-surface">上传预测明细表</h2>
+</div>
+<div class="text-right">
+<p class="text-xs text-on-surface-variant">当前版本: Enterprise v4.2.1</p>
+</div>
+</div>
+<!-- Main Processing Card (Bento Grid Style) -->
+<div class="grid grid-cols-12 gap-md">
+<!-- Section 1: Processing State -->
+<div class="col-span-12 lg:col-span-8 space-y-md">
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-xl relative overflow-hidden">
+<div class="flex justify-between items-start mb-lg">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 bg-primary-fixed rounded-xl flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-3xl">description</span>
+</div>
+<div>
+<h3 class="font-title-sm text-title-sm">2024Q2_产销预测_v1.xlsx</h3>
+<p class="text-body-sm text-on-surface-variant">文件大小：2.4MB | 修改日期：2024-05-20 14:30</p>
+</div>
+</div>
+<div class="px-3 py-1 bg-secondary-container text-on-secondary-container rounded-full text-xs font-bold flex items-center gap-1">
+<span class="material-symbols-outlined text-xs">check_circle</span> 已上传
+                            </div>
+</div>
+<!-- Progress Section -->
+<div class="space-y-sm">
+<div class="flex justify-between text-body-sm mb-2">
+<span class="font-bold text-primary">文件解析中 (65%)...</span>
+<span class="text-on-surface-variant">预计还需 12 秒</span>
+</div>
+<div class="h-3 w-full bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-primary relative w-[65%] transition-all duration-500 ease-out">
+<div class="absolute inset-0 shimmer"></div>
+</div>
+</div>
+</div>
+<!-- Horizontal Steps Indicator -->
+<div class="mt-xl pt-lg border-t border-outline-variant flex justify-between relative">
+<div class="flex flex-col items-center gap-2 relative z-10 bg-surface-container-lowest px-2 first:pl-0">
+<div class="w-6 h-6 rounded-full bg-secondary text-white flex items-center justify-center">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">check</span>
+</div>
+<span class="text-xs font-bold text-secondary">文件上传</span>
+</div>
+<div class="flex flex-col items-center gap-2 relative z-10 bg-surface-container-lowest px-4">
+<div class="w-6 h-6 rounded-full border-2 border-primary text-primary flex items-center justify-center bg-white">
+<div class="w-2 h-2 bg-primary rounded-full animate-pulse"></div>
+</div>
+<span class="text-xs font-bold text-primary">数据解析</span>
+</div>
+<div class="flex flex-col items-center gap-2 relative z-10 bg-surface-container-lowest px-4">
+<div class="w-6 h-6 rounded-full border-2 border-outline-variant text-outline flex items-center justify-center bg-white">
+<span class="text-[10px] font-bold">3</span>
+</div>
+<span class="text-xs text-on-surface-variant">汇总计算</span>
+</div>
+<div class="flex flex-col items-center gap-2 relative z-10 bg-surface-container-lowest px-2 last:pr-0">
+<div class="w-6 h-6 rounded-full border-2 border-outline-variant text-outline flex items-center justify-center bg-white">
+<span class="text-[10px] font-bold">4</span>
+</div>
+<span class="text-xs text-on-surface-variant">结果存库</span>
+</div>
+<!-- Connector lines -->
+<div class="absolute top-[11px] left-0 right-0 h-[2px] bg-outline-variant -z-0 mx-8"></div>
+<div class="absolute top-[11px] left-8 w-[25%] h-[2px] bg-secondary -z-0"></div>
+<div class="absolute top-[11px] left-[35%] w-[15%] h-[2px] bg-primary -z-0 opacity-40"></div>
+</div>
+</div>
+<!-- Error State (Collapsible or Alternate) -->
+<div class="bg-error-container/30 border border-error/20 rounded-xl p-lg flex gap-4">
+<span class="material-symbols-outlined text-error text-2xl">error_outline</span>
+<div class="flex-1">
+<h4 class="text-on-error-container font-bold text-body-md">解析失败</h4>
+<p class="text-on-error-container text-body-sm mt-1 leading-relaxed">
+                                解析失败：未能在工作簿中找到名为《预测及排期明细表》的 Sheet，请检查文件格式后重新上传。
+                            </p>
+<div class="mt-4 flex gap-3">
+<button class="px-4 py-1.5 bg-error text-white rounded-lg text-xs font-bold hover:bg-error/90 transition-colors">重新上传</button>
+<button class="px-4 py-1.5 border border-error/40 text-error rounded-lg text-xs font-bold hover:bg-error/5 transition-colors">查看规范手册</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Section 2: Info & Stats -->
+<div class="col-span-12 lg:col-span-4 space-y-md">
+<!-- Instruction Card -->
+<div class="bg-primary-container text-on-primary-container rounded-xl p-lg">
+<h4 class="font-bold flex items-center gap-2 mb-3">
+<span class="material-symbols-outlined text-xl">info</span>
+                            操作指南
+                        </h4>
+<ul class="space-y-2 text-xs opacity-90 list-disc list-inside">
+<li>请确保 Excel 文件包含至少一个名为“预测及排期明细表”的工作表。</li>
+<li>A列必须为“SKU 编码”，B列必须为“月度需求”。</li>
+<li>单次上传文件大小请勿超过 50MB。</li>
+</ul>
+</div>
+<!-- Recently Uploaded Lists -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl overflow-hidden">
+<div class="p-md border-b border-outline-variant bg-surface-container-low flex justify-between items-center">
+<span class="font-bold text-body-sm">最近处理</span>
+<button class="text-xs text-primary hover:underline">查看全部</button>
+</div>
+<div class="divide-y divide-outline-variant">
+<div class="p-md hover:bg-surface-container transition-colors cursor-pointer group">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-on-surface-variant">table_chart</span>
+<div class="min-w-0 flex-1">
+<p class="text-xs font-bold truncate">2024Q1_历史补货.csv</p>
+<p class="text-[10px] text-on-surface-variant mt-0.5">2024-05-19 · 成功</p>
+</div>
+<span class="material-symbols-outlined text-secondary opacity-0 group-hover:opacity-100 transition-opacity">check_circle</span>
+</div>
+</div>
+<div class="p-md hover:bg-surface-container transition-colors cursor-pointer group">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-on-surface-variant">table_chart</span>
+<div class="min-w-0 flex-1">
+<p class="text-xs font-bold truncate">上海工厂_库存快照.xlsx</p>
+<p class="text-[10px] text-on-surface-variant mt-0.5">2024-05-18 · 成功</p>
+</div>
+<span class="material-symbols-outlined text-secondary opacity-0 group-hover:opacity-100 transition-opacity">check_circle</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Visual KPI -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-md">
+<p class="text-xs text-on-surface-variant uppercase font-bold tracking-widest mb-2">系统吞吐量</p>
+<div class="flex items-baseline gap-2">
+<span class="text-3xl font-data-mono font-bold text-primary">12.8</span>
+<span class="text-xs text-on-surface-variant">GB / 今日已处理</span>
+</div>
+<div class="mt-4 h-12 flex items-end gap-1">
+<div class="flex-1 bg-primary/20 h-1/2 rounded-t-sm"></div>
+<div class="flex-1 bg-primary/20 h-2/3 rounded-t-sm"></div>
+<div class="flex-1 bg-primary/40 h-3/4 rounded-t-sm"></div>
+<div class="flex-1 bg-primary/30 h-1/2 rounded-t-sm"></div>
+<div class="flex-1 bg-primary/60 h-4/5 rounded-t-sm"></div>
+<div class="flex-1 bg-primary h-full rounded-t-sm"></div>
+<div class="flex-1 bg-primary/10 h-1/3 rounded-t-sm"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- AI Insight Bar -->
+<div class="bg-white border border-outline-variant rounded-xl p-md flex items-center gap-md shadow-sm">
+<div class="flex items-center gap-2 px-3 py-1 bg-tertiary-container text-on-tertiary-container rounded-lg text-xs font-bold">
+<span class="material-symbols-outlined text-sm">auto_awesome</span>
+                    智能提示
+                </div>
+<p class="text-body-sm flex-1 text-on-surface-variant">
+                    检测到该文件包含 <strong>1,240条</strong> SKU 预测记录。系统将自动匹配历史趋势数据，建议在解析完成后进行“异常值校验”。
+                </p>
+<div class="flex gap-4">
+<button class="text-xs font-bold text-primary hover:underline">查看趋势图表</button>
+<button class="text-xs font-bold text-on-surface-variant hover:text-primary transition-colors">忽略</button>
+</div>
+</div>
+</div>
+</main>
+<!-- Contextual FAB (Hidden as per relevance check for specific task focus, but kept for layout integrity in dashboard) -->
+<button class="fixed bottom-lg right-lg w-14 h-14 bg-primary text-white rounded-full shadow-lg flex items-center justify-center hover:scale-105 active:scale-95 transition-transform z-50">
+<span class="material-symbols-outlined" data-icon="smart_toy">smart_toy</span>
+</button>
+<script>
+        // Progress bar simulation logic
+        let progress = 65;
+        const progressBar = document.querySelector('.h-full.bg-primary');
+        const progressText = document.querySelector('.text-primary.font-bold');
+
+        setInterval(() => {
+            if (progress < 99) {
+                progress += Math.random() * 0.5;
+                if (progressBar) progressBar.style.width = `${progress}%`;
+                if (progressText) progressText.innerText = `文件解析中 (${Math.floor(progress)}%)...`;
+            }
+        }, 1000);
+
+        // Visual depth hover effects
+        document.querySelectorAll('.rounded-xl').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                if (!card.classList.contains('bg-error-container/30')) {
+                    card.classList.add('shadow-md');
+                    card.style.borderColor = '#003d9b44';
+                }
+            });
+            card.addEventListener('mouseleave', () => {
+                card.classList.remove('shadow-md');
+                card.style.borderColor = '';
+            });
+        });
+    </script>
+</body></html>
