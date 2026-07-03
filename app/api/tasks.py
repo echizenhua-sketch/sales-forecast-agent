@@ -24,6 +24,7 @@ from app.schemas.sku import SkuDetailResponse, SkuListResponse
 from app.services.forecast_service import ForecastCalculationService
 from app.services.parser_service import ExcelParserError
 from app.services.audit_service import write_audit_log
+from app.services.memory_service import AssistantMemoryService
 
 router = APIRouter()
 settings = get_settings()
@@ -754,6 +755,15 @@ async def chat_with_ai(
             }
         context["sku_details"] = _build_sku_context_rows(db, task_id, message)
     context["conversation_history"] = _build_conversation_history(db, session_id)
+    memory_service = AssistantMemoryService()
+    long_term_memories = memory_service.search(
+        message,
+        user_id=current_user.id,
+        limit=settings.memory_search_limit,
+    )
+    if long_term_memories:
+        context["long_term_memories"] = long_term_memories
+        context["long_term_memory_text"] = memory_service.format_for_prompt(long_term_memories)
     
     # 调用AI服务
     ai_service = AIService()
@@ -785,6 +795,13 @@ async def chat_with_ai(
     )
     db.commit()
     db.refresh(conversation)
+    memory_service.add_interaction(
+        user_message=message,
+        assistant_message=response.get("message", ""),
+        user_id=current_user.id,
+        session_id=session_id,
+        metadata={"task_id": task_id, "conversation_id": conversation.id},
+    )
     response["conversation_id"] = conversation.id
 
     return response

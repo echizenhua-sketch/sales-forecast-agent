@@ -441,6 +441,53 @@ class TestAPIEndpoints:
         assert detail_response.status_code == 200
         assert len(detail_response.json()["messages"]) == 2
 
+    def test_chat_includes_long_term_memory_context(self, monkeypatch, tmp_path):
+        """AI 对话应检索长期记忆，并在回答后继续写入项目内记忆。"""
+        from app.core.config import get_settings
+        from app.services.memory_service import AssistantMemoryService
+
+        task_id = self._create_success_task(tmp_path, task_id=7001)
+        memory_dir = tmp_path / "mem0"
+        captured = {}
+
+        monkeypatch.setenv("MEMORY_ENABLED", "true")
+        monkeypatch.setenv("MEMORY_BACKEND", "jsonl")
+        monkeypatch.setenv("MEMORY_DIR", str(memory_dir))
+        get_settings.cache_clear()
+
+        memory_service = AssistantMemoryService()
+        memory_service.add_interaction(
+            user_message="请记住：我最关注 KA 部缺口",
+            assistant_message="已记录。",
+            user_id=1,
+            session_id="old-session",
+        )
+
+        def fake_chat(self, session_id, user_message, context=None):
+            captured["context"] = context
+            return {
+                "success": True,
+                "message": "长期记忆回答",
+                "session_id": session_id,
+                "type": "llm_generate",
+                "model": "test-model",
+                "timestamp": "2026-07-03T00:00:00",
+            }
+
+        monkeypatch.setattr("app.services.ai_service.AIService.chat", fake_chat)
+
+        response = client.post(
+            "/api/chat",
+            json={"session_id": "memory-session", "message": "KA部缺口怎么处理？", "task_id": task_id},
+        )
+
+        assert response.status_code == 200
+        assert "long_term_memories" in captured["context"]
+        assert "KA 部缺口" in captured["context"]["long_term_memory_text"]
+        assert (memory_dir / "memories.jsonl").exists()
+        assert len((memory_dir / "memories.jsonl").read_text(encoding="utf-8").splitlines()) >= 2
+        get_settings.cache_clear()
+
     def test_export_logs_settings_notifications_and_search(self, tmp_path):
         """导出、操作日志、设置、通知和搜索 API 应可用。"""
         from openpyxl import load_workbook

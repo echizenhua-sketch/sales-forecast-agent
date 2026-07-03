@@ -206,6 +206,14 @@ SELECT ... FROM sku_forecast_detail ...
 # 当前数据上下文"""
 
         if context:
+            if context.get("long_term_memory_text"):
+                prompt += f"""
+
+## 长期记忆
+以下是从用户历史交互中检索到的长期记忆。回答时可参考，但如果与当前任务数据冲突，以当前任务数据为准。
+
+{context["long_term_memory_text"]}"""
+
             if "task_summary" in context:
                 summary = context["task_summary"]
                 prompt += f"""

@@ -42,6 +42,12 @@ class Settings(BaseSettings):
     anthropic_base_url: str = ""
     anthropic_auth_token: str = ""
 
+    # 长期记忆配置
+    memory_enabled: bool = False
+    memory_backend: str = "jsonl"
+    memory_dir: Path = Field(default=Path(".runtime/mem0"))
+    memory_search_limit: int = 5
+
     model_config = SettingsConfigDict(
         env_file=".env",
         env_file_encoding="utf-8",
@@ -54,6 +60,8 @@ class Settings(BaseSettings):
         self.data_dir.mkdir(parents=True, exist_ok=True)
         self.upload_dir.mkdir(parents=True, exist_ok=True)
         self.log_dir.mkdir(parents=True, exist_ok=True)
+        if self.memory_enabled:
+            self.memory_dir.mkdir(parents=True, exist_ok=True)
 
 
 @lru_cache()
