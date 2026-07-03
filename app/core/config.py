@@ -47,6 +47,11 @@ class Settings(BaseSettings):
     memory_backend: str = "jsonl"
     memory_dir: Path = Field(default=Path(".runtime/mem0"))
     memory_search_limit: int = 5
+    embedding_api_base: str = ""
+    embedding_api_key: str = ""
+    embedding_model: str = ""
+    embedding_encoding_format: str = "float"
+    embedding_timeout_seconds: int = 30
 
     model_config = SettingsConfigDict(
         env_file=".env",

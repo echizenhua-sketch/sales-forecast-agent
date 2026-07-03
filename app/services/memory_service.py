@@ -3,10 +3,13 @@
 from __future__ import annotations
 
 import json
+import math
 import re
 from datetime import datetime
 from pathlib import Path
 from typing import Any
+
+import requests
 
 from app.core.config import get_settings
 
@@ -27,6 +30,11 @@ class AssistantMemoryService:
         self.memory_dir = Path(settings.memory_dir)
         self.search_limit = int(settings.memory_search_limit or 5)
         self.memory_file = self.memory_dir / "memories.jsonl"
+        self.embedding_api_base = (settings.embedding_api_base or "").rstrip("/")
+        self.embedding_api_key = settings.embedding_api_key or ""
+        self.embedding_model = settings.embedding_model or ""
+        self.embedding_encoding_format = settings.embedding_encoding_format or "float"
+        self.embedding_timeout = int(settings.embedding_timeout_seconds or 30)
 
         if self.enabled:
             self.memory_dir.mkdir(parents=True, exist_ok=True)
@@ -37,6 +45,9 @@ class AssistantMemoryService:
             return []
 
         limit = limit or self.search_limit
+        if self.backend == "vector_jsonl":
+            return self._vector_search(query, user_id, limit)
+
         if self.backend != "jsonl":
             return []
 
@@ -65,11 +76,15 @@ class AssistantMemoryService:
         metadata: dict[str, Any] | None = None,
     ) -> None:
         """Persist a compact memory candidate from a completed interaction."""
-        if not self.enabled or self.backend != "jsonl":
+        if not self.enabled or self.backend not in {"jsonl", "vector_jsonl"}:
             return
 
         memory = self._build_memory_text(user_message, assistant_message)
         if not memory:
+            return
+
+        embedding = self._embed(memory) if self.backend == "vector_jsonl" else None
+        if self.backend == "vector_jsonl" and not embedding:
             return
 
         row = {
@@ -79,6 +94,8 @@ class AssistantMemoryService:
             "memory": memory,
             "metadata": metadata or {},
         }
+        if embedding:
+            row["embedding"] = embedding
         with self.memory_file.open("a", encoding="utf-8") as handle:
             handle.write(json.dumps(row, ensure_ascii=False) + "\n")
 
@@ -129,3 +146,63 @@ class AssistantMemoryService:
     def _score(self, memory: str, terms: set[str]) -> int:
         lowered = memory.lower()
         return sum(1 for term in terms if term and term in lowered)
+
+    def _vector_search(self, query: str, user_id: int | str | None, limit: int) -> list[dict[str, Any]]:
+        query_embedding = self._embed(query)
+        if not query_embedding:
+            return []
+
+        scored = []
+        for row in self._load_rows():
+            if str(row.get("user_id")) != str(user_id):
+                continue
+            embedding = row.get("embedding")
+            if not isinstance(embedding, list):
+                continue
+            score = self._cosine_similarity(query_embedding, embedding)
+            if score > 0:
+                item = dict(row)
+                item["score"] = score
+                item.pop("embedding", None)
+                scored.append(item)
+
+        scored.sort(key=lambda item: (item["score"], item.get("created_at", "")), reverse=True)
+        return scored[:limit]
+
+    def _embed(self, text: str) -> list[float]:
+        if not self.embedding_api_base or not self.embedding_api_key or not self.embedding_model:
+            return []
+
+        try:
+            response = requests.post(
+                f"{self.embedding_api_base}/embeddings",
+                headers={
+                    "Authorization": f"Bearer {self.embedding_api_key}",
+                    "Content-Type": "application/json",
+                },
+                json={
+                    "model": self.embedding_model,
+                    "input": text,
+                    "encoding_format": self.embedding_encoding_format,
+                },
+                timeout=self.embedding_timeout,
+            )
+            response.raise_for_status()
+            data = response.json()
+            embedding = data.get("data", [{}])[0].get("embedding")
+            if isinstance(embedding, list):
+                return [float(value) for value in embedding]
+        except Exception:
+            return []
+        return []
+
+    def _cosine_similarity(self, left: list[float], right: list[float]) -> float:
+        if not left or not right or len(left) != len(right):
+            return 0.0
+
+        dot = sum(a * b for a, b in zip(left, right))
+        left_norm = math.sqrt(sum(a * a for a in left))
+        right_norm = math.sqrt(sum(b * b for b in right))
+        if not left_norm or not right_norm:
+            return 0.0
+        return dot / (left_norm * right_norm)
