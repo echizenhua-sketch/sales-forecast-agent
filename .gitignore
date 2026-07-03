@@ -36,6 +36,14 @@ web/playwright-report/
 venv/
 env/
 ENV/
+.venv/
+
+# Project-local runtime/deployment artifacts
+.python/
+.node/
+.cache/
+.runtime/
+.tmp/
 
 # IDE
 .vscode/
